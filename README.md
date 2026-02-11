@@ -103,6 +103,3 @@ python list_azure_blobs.py
 ```
 
 ---
-
-## 📞 Soporte
-Para problemas con credenciales o acceso a Azure, contactar al equipo de infraestructura.
