@@ -233,7 +233,7 @@ $FRONTEND_FQDN = az container show `
   --name form-frontend `
   --query ipAddress.fqdn -o tsv
 
-Write-Host "Frontend URL: http://$FRONTEND_FQDN"
+Write-Host "Frontend URL: https://$FRONTEND_FQDN"
 ```
 
 #### 10. Actualizar Microsoft Entra ID Redirect URIs

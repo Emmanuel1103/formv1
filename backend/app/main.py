@@ -33,13 +33,23 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS - Configuración segura solo con orígenes específicos
+# Construir lista de orígenes permitidos dinámicamente
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
+# Agregar FRONTEND_URL si está configurado y no está ya en la lista
+if settings.FRONTEND_URL and settings.FRONTEND_URL not in allowed_origins:
+    allowed_origins.append(settings.FRONTEND_URL)
+    # Si es HTTPS de Azure, también permitir el equivalente HTTP por si acaso
+    if settings.FRONTEND_URL.startswith("https://") and ".azurecontainerapps.io" in settings.FRONTEND_URL:
+        http_variant = settings.FRONTEND_URL.replace("https://", "http://")
+        allowed_origins.append(http_variant)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        settings.FRONTEND_URL,
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

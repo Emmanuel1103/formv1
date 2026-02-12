@@ -4,11 +4,10 @@ const getApiUrl = () => {
     return import.meta.env.VITE_API_URL;
   }
   
-  // Si estamos en Azure Container Apps, detectar automáticamente
+  // Si estamos en Azure Container Apps, detectar automáticamente y forzar HTTPS
   if (window.location.hostname.includes('azurecontainerapps.io')) {
-    const protocol = window.location.protocol; // 'https:' o 'http:'
     const hostname = window.location.hostname.replace('-web-', '-api-');
-    return `${protocol}//${hostname}`;
+    return `https://${hostname}`; // Forzar HTTPS en Azure
   }
   
   // Por defecto, localhost para desarrollo
