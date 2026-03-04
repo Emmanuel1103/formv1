@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import RegistroAsistencia from './pages/RegistroAsistencia';
+import RegistroMain from './pages/registro/RegistroMain';
 import TalentoHumano from './pages/TalentoHumano';
 import Login from './pages/Login';
 import AccesoDenegado from './pages/AccesoDenegado';
@@ -11,7 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/registro" element={<RegistroAsistencia />} />
+        <Route path="/registro" element={<RegistroMain />} />
         <Route path="/login" element={<Login />} />
         <Route path="/auth-success" element={<Login />} />
         <Route path="/acceso-denegado" element={<AccesoDenegado />} />

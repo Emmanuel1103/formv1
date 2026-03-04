@@ -50,48 +50,14 @@ def save_asistentes(asistentes: List[dict]):
 
 # ========== FUNCIONES PRINCIPALES ==========
 
-def crear_asistente(asistente_data: dict, firma_data, sesion_id: str, ip_address: Optional[str] = None) -> dict:
-    """Crear asistente en CosmosDB o JSON según configuración.
-
-    `firma_data` puede ser:
-    - bytes: los bytes del archivo de imagen (cuando viene como upload)
-    - str: un data URL o base64 crudo (cuando viene desde frontend en base64)
-    """
+def crear_asistente(asistente_data: dict, sesion_id: str, ip_address: Optional[str] = None) -> dict:
+    """Crear asistente en CosmosDB o JSON según configuración."""
     
     # Import sesiones service to get session info
     from services import sesiones as sesion_service
 
-    # Save firma using storage adapter
-    storage = get_storage_adapter()
-
-    # Obtener bytes desde distintos formatos
-    if isinstance(firma_data, (bytes, bytearray)):
-        firma_bytes = bytes(firma_data)
-    elif isinstance(firma_data, str):
-        firma_base64 = firma_data
-        if firma_base64.startswith('data:image'):
-            # Remove data URL prefix if present
-            firma_base64 = firma_base64.split(',')[1]
-        firma_bytes = base64.b64decode(firma_base64)
-    else:
-        raise ValueError('Formato de firma no soportado')
-    
-    # Get session info to extract training name and creator
-    sesion = sesion_service.get_sesion_by_id(sesion_id)
-    nombre_capacitacion = sesion.get('tema', 'unknown') if sesion else 'unknown'
-    created_by = sesion.get('created_by', 'unknown') if sesion else 'unknown'
-    
     cedula = asistente_data['cedula']
     nombre_persona = asistente_data.get('nombre', cedula)
-    
-    firma_filename = storage.save_firma(
-        firma_bytes, 
-        cedula, 
-        nombre_capacitacion,
-        created_by,
-        nombre_persona
-    )
-    firma_url = storage.get_firma_url(firma_filename)
     
     if settings.STORAGE_MODE == "cosmosdb" and COSMOS_AVAILABLE:
         # Verificar duplicados en CosmosDB
@@ -104,13 +70,15 @@ def crear_asistente(asistente_data: dict, firma_data, sesion_id: str, ip_address
             "token": asistente_data['token'],
             "cedula": asistente_data['cedula'],
             "nombre": asistente_data['nombre'],
-            "cargo": asistente_data['cargo'],
-            "unidad": asistente_data['unidad'],
+            "cargo": asistente_data.get('cargo'),
+            "unidad": asistente_data.get('unidad'),
+            "empresa": asistente_data.get('empresa'),
+            "telefono": asistente_data.get('telefono'),
             "correo": asistente_data['correo'],
-            "firma_url": firma_url,
-            "firma_filename": firma_filename,
             "fecha_registro": datetime.now(pytz.timezone(settings.TIMEZONE)).isoformat()
         }
+        if asistente_data.get('ocurrencia_id'):
+            nuevo_asistente['ocurrencia_id'] = asistente_data['ocurrencia_id']
         
         return cosmos_db.crear_asistente(nuevo_asistente)
     else:
@@ -128,13 +96,15 @@ def crear_asistente(asistente_data: dict, firma_data, sesion_id: str, ip_address
             "token": asistente_data['token'],
             "cedula": asistente_data['cedula'],
             "nombre": asistente_data['nombre'],
-            "cargo": asistente_data['cargo'],
-            "unidad": asistente_data['unidad'],
+            "cargo": asistente_data.get('cargo'),
+            "unidad": asistente_data.get('unidad'),
+            "empresa": asistente_data.get('empresa'),
+            "telefono": asistente_data.get('telefono'),
             "correo": asistente_data['correo'],
-            "firma_url": firma_url,
-            "firma_filename": firma_filename,
             "fecha_registro": datetime.now(pytz.timezone(settings.TIMEZONE)).isoformat()
         }
+        if asistente_data.get('ocurrencia_id'):
+            nuevo_asistente['ocurrencia_id'] = asistente_data['ocurrencia_id']
         
         asistentes.append(nuevo_asistente)
         save_asistentes(asistentes)

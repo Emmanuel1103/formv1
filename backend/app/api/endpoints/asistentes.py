@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from schemas.asistente import AsistenteCreate, AsistenteResponse
+from schemas.asistente import AsistenteInternoCreate, AsistenteExternoCreate, AsistenteResponse
 from schemas.sesion import SesionPublicResponse
 from services import sesiones as sesion_service
 from services import asistentes as asistente_service
@@ -37,50 +37,37 @@ async def obtener_info_sesion(token: str, request: Request):
             "contenido": sesion['contenido'],
             "hora_inicio": sesion['hora_inicio'],
             "hora_fin": sesion['hora_fin'],
-            "tipo_actividad": sesion['tipo_actividad']
+            "tipo_actividad": sesion['tipo_actividad'],
+            "tipo_formacion": sesion.get('tipo_formacion', 'Interna'),
+            "modalidad": sesion.get('modalidad', 'Presencial')
         }
     except (TokenNotFoundException, TokenExpiredException, TokenInactiveException) as e:
         raise e
 
-from fastapi import Form, File, UploadFile
-
-
-@router.post("/asistencia", response_model=AsistenteResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/asistencia/interna", response_model=AsistenteResponse, status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
-async def registrar_asistencia(
+async def registrar_asistencia_interna(
     request: Request,
-    cedula: str = Form(...),
-    nombre: str = Form(...),
-    cargo: str = Form(...),
-    unidad: str = Form(...),
-    correo: str = Form(...),
-    token: str = Form(...),
-    firma: UploadFile = File(...)
+    asistente_in: AsistenteInternoCreate
 ):
     """
-    Registrar asistencia de un participante.
-    Rate limit: 5 registros por minuto por IP (previene spam y duplicados).
+    Registrar asistencia de un participante interno.
+    Rate limit: 5 registros por minuto por IP.
     """
     try:
         # Validar token y obtener sesión
-        sesion = sesion_service.get_sesion_by_token(token)
-
-        # Leer bytes de la firma subida
-        firma_bytes = await firma.read()
+        sesion = sesion_service.get_sesion_by_token(asistente_in.token)
 
         # Crear registro de asistente
-        asistente_data = {
-            'cedula': cedula,
-            'nombre': nombre,
-            'cargo': cargo,
-            'unidad': unidad,
-            'correo': correo,
-            'token': token
-        }
+        asistente_data = asistente_in.dict()
+
+        # Si el token pertenece a una ocurrencia, guardar su id
+        ocurrencia_id = sesion.get('_ocurrencia_id')
+        if ocurrencia_id:
+            asistente_data['ocurrencia_id'] = ocurrencia_id
 
         nuevo_asistente = asistente_service.crear_asistente(
             asistente_data,
-            firma_bytes,
             sesion['id']
         )
         
@@ -95,3 +82,45 @@ async def registrar_asistencia(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al procesar la solicitud: {str(e)}"
         )
+
+
+@router.post("/asistencia/externa", response_model=AsistenteResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/minute")
+async def registrar_asistencia_externa(
+    request: Request,
+    asistente_in: AsistenteExternoCreate
+):
+    """
+    Registrar asistencia de un participante externo.
+    Rate limit: 5 registros por minuto por IP.
+    """
+    try:
+        # Validar token y obtener sesión
+        sesion = sesion_service.get_sesion_by_token(asistente_in.token)
+
+        # Crear registro de asistente
+        asistente_data = asistente_in.dict()
+
+        # Si el token pertenece a una ocurrencia, guardar su id
+        ocurrencia_id = sesion.get('_ocurrencia_id')
+        if ocurrencia_id:
+            asistente_data['ocurrencia_id'] = ocurrencia_id
+
+        nuevo_asistente = asistente_service.crear_asistente(
+            asistente_data,
+            sesion['id']
+        )
+        
+        return nuevo_asistente
+        
+    except (TokenNotFoundException, TokenExpiredException, TokenInactiveException) as e:
+        raise e
+    except DuplicateRegistrationException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al procesar la solicitud: {str(e)}"
+        )
+
+

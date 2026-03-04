@@ -1,0 +1,455 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #26bc58;
+  box-shadow: var(--shadow-xl);
+  height: 70px;
+  width: 100%;
+  overflow-x: clip;
+  /* Previene que hijos absolute/fixed causen scroll horizontal */
+}
+
+.header-content {
+  padding: 0 32px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-logo {
+  height: 48px;
+  width: auto;
+  display: block;
+  background: transparent;
+}
+
+.header-text {
+  color: white;
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: normal;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ── Utility Classes ── */
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: block;
+}
+
+/* Bloqueo de scroll global cuando el menú está abierto */
+body.menu-open-lock {
+  overflow: hidden !important;
+  height: 100vh !important;
+  width: 100% !important;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+}
+
+/* ── Menu Backdrop (Overlay) ── */
+.header-menu-backdrop {
+  display: none;
+  /* Oculto por defecto en escritorio */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  animation: fadeIn 0.3s ease;
+  touch-action: none;
+  /* Bloquea gestos que podrían pasar al fondo */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Original Desktop Layout (Separated) ── */
+.header-user-desktop {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  color: white;
+}
+
+.header-user-name {
+  line-height: 1.2;
+}
+
+.header-user-email {
+  font-size: 12px;
+  opacity: 0.9;
+  line-height: 1.2;
+}
+
+.btn-logout-header {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout-header:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ── User Menu Container (Mobile) ── */
+.header-user-container {
+  position: relative;
+  z-index: 1001;
+}
+
+/* El trigger solo se usa en móvil ahora */
+.header-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.header-user-details-text {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  margin-left: 4px;
+}
+
+/* Estos se manejan ahora por las clases anteriores o específicas de móvil */
+
+.header-user-container.active .header-user-name {
+  color: #1e293b;
+}
+
+.header-user-container.active .header-user-email {
+  color: #64748b;
+}
+
+.header-avatar-circle {
+  width: 34px;
+  height: 34px;
+  background: white;
+  color: #26bc58;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-avatar-circle.large {
+  width: 56px;
+  height: 56px;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* Keep shadow for the large mobile avatar */
+}
+
+.header-user-container.active .header-avatar-circle {
+  background: #26bc58;
+  color: white;
+}
+
+.menu-arrow {
+  font-size: 14px;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.menu-arrow.up {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown Menu (Desktop) ── */
+.header-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 280px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18), 0 5px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-dropdown-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-section {
+  padding: 12px 6px;
+}
+
+.dropdown-section:not(:last-child) {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dropdown-label {
+  padding: 8px 18px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  font-size: 14.5px;
+  color: #334155;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 10px;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: #f8fafc;
+  color: #26bc58;
+  transform: translateX(4px);
+}
+
+.dropdown-item.active {
+  background: #f0fdf4;
+  color: #26bc58;
+  font-weight: 600;
+}
+
+.dropdown-icon {
+  font-size: 18px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.7;
+}
+
+.dropdown-item:hover .dropdown-icon {
+  opacity: 1;
+}
+
+.dropdown-item.logout {
+  color: #ef4444;
+}
+
+.dropdown-item.logout:hover {
+  background: #fef2f2;
+}
+
+.profile-info-mobile {
+  display: none;
+  /* Solo visible en el drawer móvil */
+}
+
+/* ── Modal & Actions ── */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* ── Responsive & Side Drawer ── */
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .header {
+    height: 60px;
+  }
+
+  .header-content {
+    padding: 0 16px;
+  }
+
+  .header-logo {
+    height: 38px;
+  }
+
+  .header-menu-backdrop {
+    display: block;
+  }
+
+  .header-user-details-text {
+    display: none;
+  }
+
+  .header-user-trigger {
+    padding: 4px;
+    gap: 4px;
+    border: none;
+    background: transparent;
+  }
+
+  .header-avatar-circle {
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .menu-arrow {
+    font-size: 12px;
+  }
+
+  /* Transformar Dropdown en Drawer (Panel Lateral) */
+  .header-dropdown-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+    transform: translateX(110%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.2s ease,
+      visibility 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    border: none;
+    z-index: 2000;
+  }
+
+  .header-dropdown-menu.open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .dropdown-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .profile-info-mobile {
+    display: block !important;
+    padding: 32px 24px;
+    background: linear-gradient(135deg, #26bc58 0%, #1e9d4c 100%);
+    color: white;
+  }
+
+  .mobile-profile-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-user-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-user-name {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .mobile-user-email {
+    font-size: 13px;
+    opacity: 0.9;
+    line-height: 1.2;
+    word-break: break-all;
+    /* Permitir que correos muy largos rompan línea en el drawer si es necesario */
+  }
+
+  .dropdown-section {
+    padding: 16px 12px;
+  }
+
+  .dropdown-label {
+    padding: 0 12px 12px;
+  }
+
+  .dropdown-item {
+    font-size: 15px;
+    padding: 14px 12px;
+  }
+
+  .dropdown-icon {
+    font-size: 20px;
+    width: 28px;
+  }
+}

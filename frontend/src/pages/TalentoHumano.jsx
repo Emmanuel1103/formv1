@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/common/Header';
-import MenuLateral from '../components/talento/MenuLateral';
-import CrearCapacitacion from '../components/talento/CrearCapacitacion';
-import SesionesRegistradas from '../components/talento/SesionesRegistradas';
-import VerAsistentes from '../components/talento/VerAsistentes';
-import ConfiguracionModal from '../components/talento/ConfiguracionModal';
+import { Header } from '../components/common';
+import {
+  MenuLateral,
+  CrearCapacitacion,
+  SesionesRegistradas,
+  VerAsistentes,
+  Seguimiento,
+  Estadisticas,
+  Configuracion,
+  ConfiguracionModal
+} from '../components/talento';
 import CentroAyuda from './CentroAyuda';
-import { tienePermiso } from '../utils/permisos';
+import { sesionesService } from '../services/sesiones';
 import './TalentoHumano.css';
 
 const TalentoHumano = () => {
   const [activeView, setActiveView] = useState('crear');
-  const [showConfigModal, setShowConfigModal] = useState(false);
 
-  // Protección: si intenta acceder a 'sesiones' sin permiso, redirigir
+  // Prefetch de sesiones al cargar la app para que el módulo no tenga que esperar
   useEffect(() => {
-    const verificarAcceso = async () => {
-      if (activeView === 'sesiones') {
-        const puedeVer = await tienePermiso('ver_sesiones');
-        if (!puedeVer) {
-          setActiveView('crear'); // Redirigir a vista por defecto
-        }
-      }
-    };
-    verificarAcceso();
-  }, [activeView]);
+    sesionesService.listar().catch(() => { }); // Popula el caché, ignorar errores silenciosamente
+  }, []);
 
   const renderView = () => {
     switch (activeView) {
@@ -34,8 +30,14 @@ const TalentoHumano = () => {
         return <SesionesRegistradas />;
       case 'asistentes':
         return <VerAsistentes />;
+      case 'seguimiento':
+        return <Seguimiento />;
+      case 'estadisticas':
+        return <Estadisticas />;
       case 'ayuda':
         return <CentroAyuda />;
+      case 'configuracion':
+        return <Configuracion />;
       default:
         return <CrearCapacitacion />;
     }
@@ -43,24 +45,23 @@ const TalentoHumano = () => {
 
   return (
     <div className="talento-page">
-      <Header />
-      
+      <Header
+        activeView={activeView}
+        onModuleChange={setActiveView}
+        onConfigClick={() => setActiveView('configuracion')}
+      />
+
       <div className="talento-layout">
-        <MenuLateral 
-          activeView={activeView} 
+        <MenuLateral
+          activeView={activeView}
           onViewChange={setActiveView}
-          onConfigClick={() => setShowConfigModal(true)}
+          onConfigClick={() => setActiveView('configuracion')}
         />
-        
+
         <main className="talento-content">
           {renderView()}
         </main>
       </div>
-
-      <ConfiguracionModal 
-        isOpen={showConfigModal}
-        onClose={() => setShowConfigModal(false)}
-      />
     </div>
   );
 };

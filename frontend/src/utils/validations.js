@@ -26,9 +26,24 @@ export const validations = {
 
   unidad: (value) => {
     const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!value) return 'La unidad es obligatoria';
-    if (value.trim().length < 2) return 'La unidad debe tener al menos 2 caracteres';
-    if (!regex.test(value)) return 'La unidad solo puede contener letras y espacios';
+    if (!value) return 'La dirección es obligatoria';
+    if (value.trim().length < 2) return 'La dirección debe tener al menos 2 caracteres';
+    if (!regex.test(value)) return 'La dirección solo puede contener letras y espacios';
+    return null;
+  },
+
+  empresa: (value) => {
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,-]+$/;
+    if (!value) return 'La empresa es obligatoria';
+    if (value.trim().length < 2) return 'El nombre de la empresa debe tener al menos 2 caracteres';
+    if (!regex.test(value)) return 'Contiene caracteres no permitidos';
+    return null;
+  },
+
+  telefono: (value) => {
+    const regex = /^\d{7,15}$/;
+    if (!value) return 'El número de teléfono es obligatorio';
+    if (!regex.test(value)) return 'El teléfono debe tener entre 7 y 15 dígitos';
     return null;
   },
 
@@ -78,6 +93,18 @@ export const validations = {
   contenido: (value) => {
     if (!value) return 'El contenido es obligatorio';
     if (value.trim().length < 10) return 'El contenido debe tener al menos 10 caracteres';
+    return null;
+  },
+
+  tipo_formacion: (value) => {
+    if (!value) return 'El tipo de formación es obligatorio';
+    if (!['Interna', 'Externa'].includes(value)) return 'Tipo de formación inválido';
+    return null;
+  },
+
+  modalidad: (value) => {
+    if (!value) return 'La modalidad es obligatoria';
+    if (!['Virtual', 'Presencial', 'Híbrida'].includes(value)) return 'Modalidad inválida';
     return null;
   }
 };

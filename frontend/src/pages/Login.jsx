@@ -1,84 +1,129 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Loading from '../components/common/Loading';
-import logo_fsdverde from '../assets/img/logo_fsdverde.png';
+import { Loading } from '../components/common';
+import logo_fsd from '../assets/img/logo_fsd.png';
 import { config } from '../utils/constants';
 import { getAuthToken, setAuthToken, setUserInfo, clearAuth } from '../utils/auth';
 import './Login.css';
 
+/* ── Microsoft logo SVG (official squares) ──────────────────────────── */
+const MicrosoftLogo = () => (
+  <svg
+    className="ms-logo"
+    width="20"
+    height="20"
+    viewBox="0 0 23 23"
+    aria-hidden="true"
+  >
+    <path fill="#f35325" d="M1 1h10v10H1z" />
+    <path fill="#81bc06" d="M12 1h10v10H12z" />
+    <path fill="#05a6f0" d="M1 12h10v10H1z" />
+    <path fill="#ffba08" d="M12 12h10v10H12z" />
+  </svg>
+);
+
+/* ── Shield icon ─────────────────────────────────────────────────────── */
+const ShieldIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+/* ── Lock icon ───────────────────────────────────────────────────────── */
+const LockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+/* ── Users icon ──────────────────────────────────────────────────────── */
+const UsersIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+/* ── Info icon ───────────────────────────────────────────────────────── */
+const InfoIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </svg>
+);
+
+/* ── Alert icon ──────────────────────────────────────────────────────── */
+const AlertIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="login-error-icon">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
+/* ══════════════════════════════════════════════════════════════════════
+   LOGIN COMPONENT
+   ══════════════════════════════════════════════════════════════════════ */
 const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState(null);
 
-  // Verificar si ya está autenticado
+  /* ── Auto-login if token exists ─── */
   useEffect(() => {
     const token = getAuthToken();
-    if (token) {
-      // Verificar si el token es válido
-      verifyToken(token);
-    }
+    if (token) verifyToken(token);
   }, []);
 
-  // Manejar el token recibido después del callback
+  /* ── Handle callback token ─── */
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {
       setAuthToken(token);
-      // Obtener información del usuario
       fetchUserInfo(token);
     }
   }, [searchParams]);
 
   const verifyToken = async (token) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await fetch(`${config.apiUrl}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (response.ok) {
-        const userData = await response.json();
+      if (res.ok) {
         navigate('/talento-humano', { replace: true });
       } else {
-        // Token inválido, limpiar
         clearAuth();
       }
-    } catch (error) {
-      console.error('Error verificando token:', error);
+    } catch {
       clearAuth();
     }
   };
 
   const fetchUserInfo = async (token) => {
     try {
-      const response = await fetch(`${config.apiUrl}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await fetch(`${config.apiUrl}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (response.ok) {
-        const userData = await response.json();
-        
-        // Usuario autenticado por Microsoft y auto-registrado en el backend
-        // El backend ya se encargó del registro en el callback
+      if (res.ok) {
+        const userData = await res.json();
         setUserInfo(userData);
         navigate('/talento-humano', { replace: true });
       } else {
         setError({
           message: 'Error al obtener información del usuario',
-          help: 'Por favor, intenta iniciar sesión nuevamente.'
+          help: 'Por favor, intenta iniciar sesión nuevamente.',
         });
         clearAuth();
       }
-    } catch (error) {
-      console.error('Error obteniendo información del usuario:', error);
+    } catch {
       setError({
         message: 'Error de conexión',
-        help: 'No se pudo conectar con el servidor. Verifica tu conexión a internet.'
+        help: 'No se pudo conectar con el servidor. Verifica tu conexión a internet.',
       });
       clearAuth();
     }
@@ -88,92 +133,82 @@ const Login = () => {
     try {
       setIsLoggingIn(true);
       setError(null);
-      
-      // Redirigir al endpoint de autenticación del backend
       window.location.href = `${config.apiUrl}/api/auth/login`;
-    } catch (error) {
-      console.error('Error en login Microsoft:', error);
+    } catch {
       setIsLoggingIn(false);
       setError({
         message: 'Error al iniciar sesión con Microsoft',
-        help: 'Si persiste el problema, contacta al administrador.'
+        help: 'Si persiste el problema, contacta al administrador.',
       });
     }
   };
 
+  /* ── Full-screen loading while authenticating ─── */
   if (isLoggingIn) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Loading />
-        <div style={{ marginLeft: '16px', textAlign: 'center' }}>
-          <p>Conectando con Microsoft...</p>
-          <p style={{ fontSize: '12px', color: '#6b7280' }}>Redirigiendo a la página de inicio de sesión</p>
-        </div>
-      </div>
-    );
+    return <Loading size="lg" fullScreen text="Conectando con Microsoft..." />;
   }
 
   return (
     <div className="login-page">
-      <div className="login-card">
-        <img src={logo_fsdverde} alt="Fundación Santo Domingo" className="login-logo" />
-        <h1>Formato asistencia a formaciones y eventos</h1>
-        <p>Ingresa para diligenciar una formación o evento</p>
-        
-        {error && (
-          <div style={{ 
-            background: '#fef2f2', 
-            border: '1px solid #fca5a5', 
-            color: '#dc2626', 
-            padding: '12px', 
-            borderRadius: '6px', 
-            marginBottom: '16px',
-            fontSize: '14px',
-            textAlign: 'left'
-          }}>
-            <div style={{ fontWeight: '600', marginBottom: '8px' }}>{error.message}</div>
-            <div style={{ 
-              fontSize: '12px', 
-              marginTop: '12px', 
-              color: '#7f1d1d',
-              whiteSpace: 'pre-line',
-              lineHeight: '1.6',
-              background: '#fff',
-              padding: '12px',
-              borderRadius: '4px',
-              border: '1px solid #fecaca'
-            }}>
-              {error.help}
+      <div className="login-card-horizontal">
+        {/* Left Side: Branding / Visual */}
+        <aside className="login-card-sidebar">
+          <div className="login-sidebar-content">
+            <img
+              src={logo_fsd}
+              alt="Fundación Santo Domingo"
+              className="login-sidebar-logo"
+            />
+            <div className="login-sidebar-divider" />
+            <h2 className="login-sidebar-title">Asistencias a <br />formaciones</h2>
+            <p className="login-sidebar-subtitle">
+              Administra formaciones, capacitaciones y registros de asistencia de manera eficiente desde un solo lugar
+            </p>
+
+            <div className="login-sidebar-badges">
+              <span className="login-badge-glass"><ShieldIcon /> SEGURO</span>
+              <span className="login-badge-glass"><UsersIcon /> INTERNO</span>
+
             </div>
           </div>
-        )}
-        
-        <button 
-          className="btn-microsoft" 
-          onClick={handleMicrosoftLogin}
-          disabled={isLoggingIn}
-          style={{
-            background: isLoggingIn ? '#ccc' : '#0078d4',
-            borderColor: isLoggingIn ? '#ccc' : '#0078d4',
-            opacity: isLoggingIn ? 0.7 : 1,
-            cursor: isLoggingIn ? 'not-allowed' : 'pointer'
-          }}
-        >
-          <svg width="20" height="20" viewBox="0 0 23 23" aria-hidden="true">
-            <path fill="#f35325" d="M1 1h10v10H1z" />
-            <path fill="#81bc06" d="M12 1h10v10H12z" />
-            <path fill="#05a6f0" d="M1 12h10v10H1z" />
-            <path fill="#ffba08" d="M12 12h10v10H12z" />
-          </svg>
-          Iniciar sesión con Microsoft
-        </button>
-        
-        <div style={{ marginTop: '20px', fontSize: '12px', color: '#6b7280', textAlign: 'center' }}>
-          <p>Usa tu cuenta corporativa de Microsoft</p>
-          <p style={{ marginTop: '4px' }}>@fundacionsantodomingo.org</p>
-        </div>
-        
-        <p className="login-hint">Fundación Santo Domingo</p>
+        </aside>
+
+        {/* Right Side: Form */}
+        <main className="login-card-content">
+          <div className="login-content-inner">
+            <div className="login-greeting">
+              <h1>Bienvenido</h1>
+              <p>Inicia sesión con tu cuenta corporativa de Microsoft.</p>
+            </div>
+
+            {error && (
+              <div className="login-error" role="alert">
+                <AlertIcon />
+                <div className="login-error-body">
+                  <span>{error.message}</span>
+                  {error.help}
+                </div>
+              </div>
+            )}
+
+            <div className="login-action-container">
+              <button
+                id="btn-microsoft-login"
+                className="btn-microsoft"
+                onClick={handleMicrosoftLogin}
+                disabled={isLoggingIn}
+                aria-label="Iniciar sesión con Microsoft"
+              >
+                <MicrosoftLogo />
+                <span>Continuar con Microsoft</span>
+              </button>
+            </div>
+
+            <footer className="login-content-footer">
+              © {new Date().getFullYear()} Fundación Santo Domingo
+            </footer>
+          </div>
+        </main>
       </div>
     </div>
   );

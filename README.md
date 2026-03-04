@@ -13,38 +13,42 @@ Sistema para gestionar formaciones, eventos y registro de asistencia con código
 
 ---
 
-## 🛠️ Configuración y Despliegue con Docker (Recomendado)
+## 🛠️ Desarrollo Local (Sin Docker)
 
 ### Prerrequisitos
-- Docker Desktop instalado
-- Archivo `.env` configurado (ver `backend/.env.example`)
+- Python 3.10+
+- Node.js 18+
+- Archivos `.env` configurados en las carpetas `backend/` y `frontend/`
 
-### 1. Iniciar la aplicación
-Ejecuta el siguiente comando para levantar frontend y backend:
+### 1. Configurar y encender el Backend
+Desde la raíz del proyecto:
 
-```bash
-docker-compose up
+```powershell
+cd backend
+# crear entorno virtual (opcional pero recomendado)
+python -m venv .venv
+.\.venv\Scripts\activate
+
+# instalar dependencias
+pip install -r requirements.txt
+
+# iniciar servidor
+python -m uvicorn app.main:app --reload
 ```
+El backend estará en: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-La aplicación estará disponible en:
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000/docs
+### 2. Configurar y encender el Frontend
+Desde la raíz del proyecto en otra terminal:
 
-### 2. Desarrollo y Hot Reload
-Docker está configurado con volúmenes para desarrollo. **No necesitas reiniciar** para:
-- Cambios en código Python (`.py`)
-- Cambios en React (`.jsx`, `.js`, `.css`)
+```powershell
+cd frontend
+# instalar dependencias
+npm install --force
 
-### 3. Actualizar dependencias o configuración
-Si instalas nuevas librerías o cambias el `.env`:
-
-```bash
-# Si agregas librerías (pip/npm)
-docker-compose up --build
-
-# Si cambias variables de entorno (.env)
-docker-compose restart
+# iniciar servidor de desarrollo
+npm run dev
 ```
+La aplicación estará en: [http://localhost:3000](http://localhost:3000)
 
 ---
 

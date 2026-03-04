@@ -1,0 +1,134 @@
+.export-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.export-modal-description {
+    color: #000000;
+    font-size: 15px;
+    margin: 0;
+    text-align: center;
+    line-height: 1.5;
+    padding: 5px 10px;
+}
+
+.export-options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.export-option-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.export-option-card:hover {
+    border-color: #26BC58;
+    background: #f0fdf4;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(38, 188, 88, 0.1), 0 4px 6px -4px rgba(38, 188, 88, 0.05);
+}
+
+.option-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.export-option-card:hover .option-icon-wrapper {
+    transform: scale(1.05);
+}
+
+.option-icon-wrapper.all {
+    background: rgba(38, 188, 88, 0.1);
+    color: #26BC58;
+}
+
+.option-icon-wrapper.mine {
+    background: rgba(38, 188, 88, 0.1);
+    color: #26BC58;
+}
+
+.option-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.option-title {
+    display: block;
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.option-desc {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.option-arrow {
+    color: #94a3b8;
+    opacity: 0.2;
+    transition: all 0.2s ease;
+}
+
+.export-option-card:hover .option-arrow {
+    opacity: 1;
+    color: #26BC58;
+    transform: translateX(4px);
+}
+
+.export-modal-footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.export-modal-footer button {
+    font-weight: 600 !important;
+    color: #64748b !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 10px 32px;
+}
+
+.export-modal-footer button:hover {
+    color: #1e293b !important;
+    background: #f1f5f9 !important;
+}
+
+@media (max-width: 480px) {
+    .export-option-card {
+        padding: 16px;
+        gap: 14px;
+    }
+
+    .option-icon-wrapper {
+        width: 44px;
+        height: 44px;
+    }
+}

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Script para explorar el contenido de Azure Blob Storage
 sin necesidad de acceder al Azure Portal.
 
@@ -34,7 +34,7 @@ if not connection_string:
 
 # Conectar a Azure
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-container_name = "formatoformacionesoeventos"
+container_name = "formatoformaciones"
 
 print("=" * 80)
 print("📦 EXPLORADOR DE AZURE BLOB STORAGE")
@@ -162,4 +162,4 @@ except Exception as e:
     print("\nVerifica que:")
     print("  1. El AZURE_STORAGE_CONNECTION_STRING sea correcto")
     print("  2. Tengas conexión a internet")
-    print("  3. El contenedor 'formatoformacionesoeventos' exista")
+    print("  3. El contenedor 'formatoformaciones' exista")

@@ -1,4 +1,4 @@
-import random
+﻿import random
 import re
 import os
 from typing import Optional
@@ -50,7 +50,7 @@ class AzureBlobStorage(StorageAdapter):
     """
     Azure Blob Storage adapter.
     Saves QR codes and signatures to Azure Blob Storage in organized folder structure.
-    Container: formatoformacionesoeventos
+    Container: formatoformaciones
     Structure:
       - QRS/{created_by}/{nombre_capacitacion}/qr_{timestamp}.png
       - firma/{cedula}/{nombre_capacitacion}/firma.png
@@ -65,7 +65,7 @@ class AzureBlobStorage(StorageAdapter):
         )
         
         # Single container with organized folder structure
-        self.container_name = "formatoformacionesoeventos"
+        self.container_name = "formatoformaciones"
         
         # Create container if it doesn't exist
         self._ensure_container()
@@ -103,39 +103,13 @@ class AzureBlobStorage(StorageAdapter):
         
         return blob_path
     
-    def save_firma(self, firma_image_bytes: bytes, cedula: str, nombre_capacitacion: str = "", created_by: str = "", nombre_persona: str = "") -> str:
-        """
-        Save signature to Azure Blob Storage.
-        New structure: {Creator}/{Training}/Firmas/Firma_{Cedula}.png
-        """
-        # Sanitizar inputs
-        created_by_clean = sanitize_filename(created_by or "unknown", max_length=50)
-        nombre_capacitacion_clean = sanitize_filename(nombre_capacitacion or "unknown", max_length=50)
-        cedula_clean = sanitize_filename(cedula, max_length=20)
-        
-        # Create blob path: Creator/Training/Firmas/Firma_{Cedula}.png
-        blob_path = f"{created_by_clean}/{nombre_capacitacion_clean}/Firmas/Firma_{cedula_clean}.png"
-        
-        # Upload to blob
-        blob_client = self.blob_service_client.get_blob_client(
-            container=self.container_name,
-            blob=blob_path
-        )
-        
-        blob_client.upload_blob(
-            firma_image_bytes,
-            overwrite=True,
-            content_settings=ContentSettings(content_type="image/png")
-        )
-        
-        return blob_path
-    
+
     def delete_training_folder(self, created_by: str, nombre_capacitacion: str) -> bool:
         """
-        Delete entire training folder including QR and all signatures.
+        Delete entire training folder including QR codes.
         Used when a training session is deleted.
         
-        Deletes: {Creator}/{Training}/ (including QR and Firmas subfolder)
+        Deletes: {Creator}/{Training}/ (including QR subfolder)
         """
         try:
             # Sanitizar inputs
@@ -178,18 +152,7 @@ class AzureBlobStorage(StorageAdapter):
         except Exception:
             return False
     
-    def delete_firma(self, filename: str) -> bool:
-        """Delete signature blob from Azure Storage."""
-        try:
-            blob_client = self.blob_service_client.get_blob_client(
-                container=self.container_name,
-                blob=filename
-            )
-            blob_client.delete_blob()
-            return True
-        except Exception:
-            return False
-    
+
     def get_blob_url_with_sas(self, filename: str) -> str:
         """
         Get direct Azure Blob URL with SAS token.
@@ -225,11 +188,3 @@ class AzureBlobStorage(StorageAdapter):
         # This avoids CORS issues when fetching from frontend
         return f"/api/proxy/blob/{filename}"
     
-    def get_firma_url(self, filename: str) -> str:
-        """
-        Get URL to access signature through backend proxy.
-        Returns backend proxy URL to avoid CORS issues.
-        """
-        # Return proxy URL through backend instead of direct Azure URL
-        # This avoids CORS issues when fetching from frontend
-        return f"/api/proxy/blob/{filename}"

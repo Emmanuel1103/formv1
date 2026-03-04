@@ -8,12 +8,16 @@ export const formatters = {
   },
 
   fecha: (dateString) => {
+    if (!dateString) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}/${year}`;
+    }
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const y = date.getFullYear();
+    return `${d}/${m}/${y}`;
   },
 
   fechaCorta: (dateString) => {
@@ -32,13 +36,34 @@ export const formatters = {
   },
 
   fechaHora: (isoString) => {
+    if (!isoString) return '';
     const date = new Date(isoString);
-    return date.toLocaleString('es-ES', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const y = date.getFullYear();
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return `${d}/${m}/${y}, ${hh}:${mm}`;
+  },
+
+  calcularDuracion: (inicio, fin) => {
+    if (!inicio || !fin) return '0h 0m';
+    try {
+      const [hInicio, mInicio] = inicio.split(':').map(Number);
+      const [hFin, mFin] = fin.split(':').map(Number);
+
+      let totalMinutos = (hFin * 60 + mFin) - (hInicio * 60 + mInicio);
+
+      if (totalMinutos < 0) return '0h 0m'; // Opcional: manejar sesiones que pasan de medianoche si fuera necesario
+
+      const horas = Math.floor(totalMinutos / 60);
+      const minutos = totalMinutos % 60;
+
+      if (horas === 0) return `${minutos} min`;
+      if (minutos === 0) return `${horas}h`;
+      return `${horas}h ${minutos}m`;
+    } catch (error) {
+      return '0h 0m';
+    }
   }
 };

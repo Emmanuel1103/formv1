@@ -7,13 +7,15 @@ export const asistentesService = {
     return response.data;
   },
 
-  // Registrar asistencia (acepta FormData con archivo 'firma')
-  registrar: async (asistenteData) => {
-    const response = await api.post('/api/asistencia', asistenteData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+  // Registrar asistencia interna
+  registrarInterno: async (asistenteData) => {
+    const response = await api.post('/api/asistencia/interna', asistenteData);
+    return response.data;
+  },
+
+  // Registrar asistencia externa
+  registrarExterno: async (asistenteData) => {
+    const response = await api.post('/api/asistencia/externa', asistenteData);
     return response.data;
   }
 };

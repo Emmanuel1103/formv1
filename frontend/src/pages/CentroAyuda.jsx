@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { config } from '../utils/constants';
 import { tienePermiso } from '../utils/permisos';
 import { getAuthToken } from '../utils/auth';
-import Loading from '../components/common/Loading';
-import Toast from '../components/common/Toast';
-import Button from '../components/common/Button';
+import { Loading, Toast, Button } from '../components/common';
 import './CentroAyuda.css';
 
 const CentroAyuda = () => {
@@ -63,9 +61,7 @@ const CentroAyuda = () => {
       setContenido(data);
       setContenidoEditado(JSON.parse(JSON.stringify(data)));
 
-      if (data.categorias?.length > 0) {
-        setCategoriaExpandida({ [data.categorias[0].id]: true });
-      }
+
     } catch (error) {
       console.error('Error cargando centro de ayuda:', error);
       setToast({ message: 'Error al cargar el centro de ayuda', type: 'error' });
@@ -522,11 +518,13 @@ const CentroAyuda = () => {
       </div>
 
       {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
+        <div className="toast-container">
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        </div>
       )}
     </div>
   );

@@ -108,7 +108,7 @@ class AyudaService:
                         {
                             "id": "crear_formacion",
                             "pregunta": "¿Cómo crear una nueva formación o evento?",
-                            "respuesta": "En la sección 'Crear formación o evento':\n\n1. Completa el Tema (título de la actividad)\n2. Selecciona la Fecha\n3. Elige el Tipo de actividad: Inducción, Formación, Evento u Otros\n4. Si eliges 'Otros', escribe el tipo personalizado\n5. Ingresa el Facilitador y Responsable\n6. Especifica el Cargo del responsable\n7. Describe el Contenido de la actividad\n8. Define la Hora inicio y Hora final\n9. Haz clic en 'Crear Formación o Evento'\n\nSe generará automáticamente un link de registro para compartir con los asistentes.",
+                            "respuesta": "En la sección 'Crear formación o evento':\n\n1. Completa el Tema (título de la actividad)\n2. Selecciona la Fecha\n3. Elige el Tipo de actividad: Capacitación, Inducción, Formación u Otros (eventos)\n4. Si eliges 'Otros (eventos)', escribe el tipo personalizado\n5. Ingresa el Facilitador y Responsable\n6. Especifica el Cargo del responsable\n7. Describe el Contenido de la actividad\n8. Define la Hora inicio y Hora final\n9. Haz clic en 'Crear Formación o Evento'\n\nSe generará automáticamente un link de registro para compartir con los asistentes.",
                             "orden": 2,
                             "visible": True,
                             "roles_permitidos": ["Administrador"]
@@ -180,19 +180,12 @@ class AyudaService:
                         {
                             "id": "datos_asistente",
                             "pregunta": "¿Qué información se registra de cada asistente?",
-                            "respuesta": "El sistema almacena:\n\n• Cédula de identidad\n• Nombre completo\n• Cargo\n• Unidad organizacional\n• Correo electrónico\n• Fecha y hora de registro\n• Firma digital\n• Código QR único\n\nToda esta información está disponible para exportación.",
+                            "respuesta": "El sistema almacena:\n\n• Cédula de identidad\n• Nombre completo\n• Cargo\n• Unidad organizacional\n• Correo electrónico\n• Fecha y hora de registro\n• Código QR único\n\nToda esta información está disponible para exportación.",
                             "orden": 2,
                             "visible": True,
                             "roles_permitidos": ["Usuario", "Administrador"]
                         },
-                        {
-                            "id": "ver_firma",
-                            "pregunta": "¿Cómo visualizar la firma de un asistente?",
-                            "respuesta": "En la tabla de asistentes:\n\n1. Haz clic en el botón 'Ver firma' de cualquier participante\n2. Se abrirá una ventana emergente mostrando la firma digital capturada\n\nLas firmas también se incluyen en los archivos exportados.",
-                            "orden": 3,
-                            "visible": True,
-                            "roles_permitidos": ["Usuario", "Administrador"]
-                        },
+
                         {
                             "id": "exportar_asistentes",
                             "pregunta": "¿Cómo exportar la lista de asistentes?",
@@ -212,19 +205,12 @@ class AyudaService:
                         {
                             "id": "acceso_publico",
                             "pregunta": "¿Cómo se registran los asistentes?",
-                            "respuesta": "Los participantes se registran a través del link de registro:\n\n1. Acceden al link compartido por el organizador\n2. Completan el formulario con sus datos:\n   - Cédula (formato automático: X.XXX.XXX)\n   - Nombre completo\n   - Cargo\n   - Unidad\n   - Correo electrónico\n3. Realizan su firma digital en el canvas\n4. Aceptan la autorización de datos\n5. Hacen clic en 'Registrar Asistencia'\n\nEl registro es instantáneo y genera un código QR único.",
+                            "respuesta": "Los participantes se registran a través del link de registro:\n\n1. Acceden al link compartido por el organizador\n2. Completan el formulario con sus datos:\n   - Cédula (formato automático: X.XXX.XXX)\n   - Nombre completo\n   - Cargo\n   - Unidad\n   - Correo electrónico\n3. Aceptan la autorización de datos\n4. Hacen clic en 'Registrar Asistencia'\n\nEl registro es instantáneo y genera un código QR único.",
                             "orden": 1,
                             "visible": True,
                             "roles_permitidos": ["Usuario", "Administrador"]
                         },
-                        {
-                            "id": "firma_canvas",
-                            "pregunta": "¿Cómo funciona la firma digital?",
-                            "respuesta": "El canvas de firma permite:\n\n• Firmar con el mouse (computador)\n• Firmar con el dedo (pantalla táctil)\n• Firmar con stylus (tablets)\n\nControles disponibles:\n• Botón 'Limpiar' para borrar y firmar nuevamente\n• La firma se guarda automáticamente en el sistema\n\nRecomendación: Usa dispositivos táctiles para mejor calidad de firma.",
-                            "orden": 2,
-                            "visible": True,
-                            "roles_permitidos": ["Usuario", "Administrador"]
-                        },
+
                         {
                             "id": "pantalla_exito",
                             "pregunta": "¿Qué pasa después de registrarse?",

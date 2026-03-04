@@ -1,3 +1,4 @@
+import React from 'react';
 import { getUserInfo } from './auth';
 import { config } from './constants';
 
@@ -114,7 +115,7 @@ export const obtenerRolUsuario = () => {
 export const tienePermiso = async (permiso) => {
   const rol = obtenerRolUsuario();
   const permisos = await obtenerPermisos();
-  
+
   return permisos[rol]?.[permiso] || false;
 };
 

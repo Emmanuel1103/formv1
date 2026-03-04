@@ -1,77 +1,241 @@
+/* =============================================
+   LOGIN PAGE – MINIMALIST 50/50 DESIGN
+   Fundación Santo Domingo · Talento Humano
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
 .login-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #26bc58 0%, #1e9d4c 40%, #0f7c3a 100%);
-  padding: 32px;
-  color: #0b3b1f;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #f0f4f2;
+  padding: 24px;
+  overflow: hidden;
 }
 
-.login-card {
+.login-card-horizontal {
+  width: 100%;
+  max-width: 900px;
+  /* Un poco más ancho para el 50/50 */
+  min-height: 540px;
   background: #ffffff;
-  border-radius: 16px;
-  padding: 36px;
-  width: min(480px, 100%);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  display: grid;
-  gap: 16px;
+  border-radius: 20px;
+  /* Bordes un poco menos redondeados para el minimalismo */
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  display: flex;
+  animation: cardFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.login-logo {
-  height: 60px;
-  object-fit: contain;
-  justify-self: center;
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.login-brand {
-  font-weight: normal;
-  color: #1e9d4c;
-  letter-spacing: 0.3px;
+/* ── Left Sidebar (Branding) ── 50% split */
+.login-card-sidebar {
+  flex: 1 1 50%;
+  background: linear-gradient(135deg, #0a6630 0%, #26bc58 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 60px;
+  color: white;
+  overflow: hidden;
 }
 
-.login-card h1 {
-  margin: 0;
+.login-sidebar-content {
+  position: relative;
+  z-index: 1;
+}
+
+.login-sidebar-logo {
+  height: 40px;
+  margin-bottom: 32px;
+  filter: brightness(0) invert(1);
+}
+
+.login-sidebar-divider {
+  width: 30px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  margin-bottom: 24px;
+}
+
+.login-sidebar-title {
   font-size: 26px;
-  color: #0f3a1f;
+  font-weight: 400;
+  /* Sin negrillas */
+  line-height: 1.3;
+  margin: 0 0 16px;
+  letter-spacing: -0.2px;
 }
 
-.login-card p {
-  margin: 0;
-  color: #4a5c52;
+.login-sidebar-subtitle {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 32px;
+}
+
+.login-sidebar-badges {
+  display: flex;
+  gap: 12px;
+}
+
+.login-badge-glass {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.05em;
+}
+
+/* ── Right Content (Form) ── 50% split */
+.login-card-content {
+  flex: 1 1 50%;
+  background: #ffffff;
+  padding: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content-inner {
+  width: 100%;
+  max-width: 320px;
+}
+
+.login-greeting {
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.login-greeting h1 {
+  font-size: 28px;
+  font-weight: 400;
+  /* Sin negrillas */
+  color: #1e293b;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.login-greeting p {
+  color: #64748b;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* Microsoft Button - Minimalist */
+.btn-microsoft {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14.5px;
+  font-weight: 400;
+  /* Sin negrillas */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-microsoft:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #26bc58;
+  color: #166534;
+}
+
+.btn-microsoft:active:not(:disabled) {
+  background: #f1f5f9;
+}
+
+/* Error Box */
+.login-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.login-error svg {
+  color: #e11d48;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.login-error-body {
+  font-size: 13px;
+  color: #9f1239;
   line-height: 1.5;
 }
 
-.btn-microsoft {
-  margin-top: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
-  width: 100%;
-  padding: 12px 16px;
-  background: #26bc58;
-  color: #ffffff;
-  border: 2px solid #26bc58;
-  border-radius: 10px;
-  font-weight: normal;
-  font-size: 15px;
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+.login-error-body span {
+  display: block;
+  margin-bottom: 2px;
 }
 
-.btn-microsoft:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 30px rgba(38, 188, 88, 0.25);
-  background: #f6fff9;
+/* Footer */
+.login-content-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 11px;
+  color: #94a3b8;
 }
 
-.btn-microsoft:active {
-  transform: translateY(0);
+/* ── Responsiveness ── */
+@media (max-width: 860px) {
+  .login-card-horizontal {
+    max-width: 440px;
+    flex-direction: column;
+    min-height: auto;
+    border-radius: 12px;
+  }
+
+  .login-card-sidebar {
+    padding: 40px;
+    flex: 0 0 auto;
+  }
+
+  .login-card-content {
+    padding: 40px;
+    flex: 0 0 auto;
+  }
 }
 
-.login-hint {
-  font-size: 13px;
-  color: #2f4737;
+@media (max-width: 480px) {
+  .login-page {
+    padding: 0;
+  }
+
+  .login-card-horizontal {
+    border-radius: 0;
+    max-width: none;
+    min-height: 100vh;
+  }
 }

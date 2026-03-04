@@ -1,0 +1,171 @@
+/* ── QR Code Modal Styles ── */
+.modal-qr-container {
+    text-align: center;
+    padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.qr-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.qr-tema-title {
+    font-size: 1.25rem;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.4;
+    max-width: 320px;
+}
+
+.qr-badges-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.qr-session-badge {
+    background: #ecfdf5;
+    color: #065f46;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #d1fae5;
+}
+
+.qr-fecha-badge {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.qr-carousel-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.qr-nav-btn {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.qr-nav-btn:hover:not(:disabled) {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+.qr-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.qr-image-wrapper {
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid #f1f5f9;
+}
+
+.qr-img-refined {
+    width: 200px;
+    height: 200px;
+    display: block;
+    border-radius: 8px;
+}
+
+.qr-pagination-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: -12px;
+    margin-bottom: 8px;
+}
+
+.qr-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.qr-dot:hover {
+    background: #cbd5e1;
+}
+
+.qr-dot.active {
+    background: #475569;
+}
+
+.qr-actions-modern {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.btn-qr-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.btn-qr-action.primary {
+    background: #26BC58;
+    color: white;
+}
+
+.btn-qr-action.primary:hover {
+    opacity: 0.95;
+}
+
+.btn-qr-action.secondary {
+    background: white;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+
+.btn-qr-action.secondary:hover {
+    opacity: 0.95;
+}
+
+.modal-footer-simple {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    gap: 12px;
+}

@@ -64,11 +64,8 @@ class LocalStorage(StorageAdapter):
         # backend/app/storage/local.py -> parent.parent.parent = backend
         self.base_dir = Path(__file__).parent.parent.parent / "uploads"
         self.qr_dir = self.base_dir / "qr_codes"
-        self.firma_dir = self.base_dir / "firmas"
-        
         # Create directories if they don't exist
         self.qr_dir.mkdir(parents=True, exist_ok=True)
-        self.firma_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"LocalStorage base_dir: {self.base_dir}")
     
     def save_qr(self, qr_image_bytes: bytes, nombre: str, fecha: str, created_by: str = "") -> str:
@@ -99,31 +96,7 @@ class LocalStorage(StorageAdapter):
         
         return filename
     
-    def save_firma(self, firma_image_bytes: bytes, cedula: str, nombre_capacitacion: str = "", created_by: str = "", nombre_persona: str = "") -> str:
-        """
-        Save signature to local filesystem.
-        Filename format: {cedula}.png
-        Protegido contra path traversal.
-        Note: Local storage doesn't use the new folder structure, kept for backward compatibility.
-        """
-        # Sanitizar cédula (seguro contra path traversal)
-        cedula_clean = sanitize_filename(cedula, max_length=20)
-        
-        # Create filename
-        filename = f"{cedula_clean}.png"
-        filepath = self.firma_dir / filename
-        
-        # Validación adicional: asegurar que el path final está dentro del directorio permitido
-        if not filepath.resolve().is_relative_to(self.firma_dir.resolve()):
-            raise ValueError("Path traversal detectado en nombre de archivo de firma")
-        
-        # Save file
-        with open(filepath, "wb") as f:
-            f.write(firma_image_bytes)
-        logger.info(f"Firma guardada: {filepath}")
 
-        return filename
-    
     def delete_qr(self, filename: str) -> bool:
         """Delete QR code file from local filesystem."""
         try:
@@ -135,17 +108,7 @@ class LocalStorage(StorageAdapter):
         except Exception:
             return False
     
-    def delete_firma(self, filename: str) -> bool:
-        """Delete signature file from local filesystem."""
-        try:
-            filepath = self.firma_dir / filename
-            if filepath.exists():
-                filepath.unlink()
-                return True
-            return False
-        except Exception:
-            return False
-    
+
     def get_qr_url(self, filename: str) -> str:
         """
         Get URL to access QR code.
@@ -153,9 +116,3 @@ class LocalStorage(StorageAdapter):
         """
         return f"/uploads/qr_codes/{filename}"
     
-    def get_firma_url(self, filename: str) -> str:
-        """
-        Get URL to access signature.
-        Returns relative path for local storage.
-        """
-        return f"/uploads/firmas/{filename}"

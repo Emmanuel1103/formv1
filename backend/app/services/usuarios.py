@@ -65,8 +65,15 @@ class UsuarioService:
     
     def obtener_rol_usuario(self, usuario_id: str):
         """Obtener el rol de un usuario"""
-        usuario = self.obtener_usuario_por_id(usuario_id)
-        return usuario.get("rol") if usuario else "Usuario"
+        if not usuario_id or not isinstance(usuario_id, str):
+            return "Usuario"
+            
+        try:
+            usuario = self.obtener_usuario_por_id(usuario_id)
+            return usuario.get("rol") if usuario else "Usuario"
+        except Exception as e:
+            print(f"Error obteniendo rol para {usuario_id}: {e}")
+            return "Usuario"
     
     def verificar_acceso_usuario(self, email: str):
         """Verificar si un usuario tiene acceso al sistema - Acceso abierto a todos"""

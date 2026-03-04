@@ -75,6 +75,7 @@ async def login(request: Request):
             scopes=settings.ENTRA_SCOPES,
             state=state,
             redirect_uri=redirect_uri,
+            prompt="select_account",  # Fuerza al usuario a seleccionar cuenta o ingresar credenciales
         )
         
         # Guardar el state temporalmente (en producción, usar Redis)
@@ -222,13 +223,13 @@ async def logout(request: Request):
         if token in user_sessions:
             del user_sessions[token]
     
-    # Construir URL de logout de Microsoft
-    logout_url = f"https://login.microsoftonline.com/{settings.ENTRA_TENANT_ID}/oauth2/v2.0/logout"
+    # Ya no redirigimos al logout global de Microsoft para evitar cerrar sesión en Teams/Outlook
+    # Simplemente devolvemos la ruta de login local
     post_logout_redirect = f"{settings.FRONTEND_URL}/login"
     
     return {
-        "message": "Sesión cerrada exitosamente",
-        "logout_url": f"{logout_url}?post_logout_redirect_uri={post_logout_redirect}"
+        "message": "Sesión cerrada localmente",
+        "logout_url": post_logout_redirect
     }
 
 

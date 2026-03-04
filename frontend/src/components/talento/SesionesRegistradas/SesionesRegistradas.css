@@ -1,0 +1,455 @@
+/* ── SesionesRegistradas — Main Layout Styles ── */
+
+.sesiones-registradas {
+  animation: fadeIn 0.5s ease;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.export-buttons,
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  display: flex;
+  background: #f1f3f5;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #adb5bd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-btn:hover {
+  color: #495057;
+}
+
+.view-toggle-btn.active {
+  background: white;
+  color: #26BC58;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .view-toggle {
+    display: none !important;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.empty-state p:first-child {
+  font-size: 18px;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.empty-subtitle {
+  font-size: 16px;
+  color: var(--text-light);
+}
+
+/* Utilidades de texto */
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/* QR en tarjetas (legacy) */
+.sesion-qr {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.qr-label {
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.qr-image {
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius-md);
+  padding: 8px;
+  background: white;
+
+}
+
+/* Legacy QR mini actions */
+.qr-actions-mini {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.btn-qr-mini {
+  padding: 8px 16px;
+  background: #26bc58;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-qr-mini:hover {
+  background: #1e9d4c;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(38, 188, 88, 0.3);
+}
+
+.btn-qr-mini svg {
+  flex-shrink: 0;
+}
+
+/* Legacy table badges */
+.table-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+}
+
+.table-badge.activity {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.table-badge.type.interna {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #26BC58;
+}
+
+.table-badge.type.externa {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fb923c;
+}
+
+.table-badge.modality.virtual {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+
+.table-badge.modality.presencial {
+  background: #fdf2f8;
+  color: #9d174d;
+  border: 1px solid #ec4899;
+}
+
+/* Legacy detail row styles (kept for backwards compat) */
+.modal-ver-detalle-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bg-hover);
+  gap: 16px;
+}
+
+.modal-ver-detalle-row:last-of-type {
+  border-bottom: none;
+  margin-bottom: 24px;
+}
+
+.modal-ver-detalle-label {
+  font-weight: normal;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.modal-ver-detalle-value {
+  font-weight: normal;
+  color: var(--text-dark);
+  font-size: 14px;
+  text-align: left;
+}
+
+.modal-ver-detalle-contenido {
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.modal-ver-detalle-badge {
+  color: var(--text-dark);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: normal;
+  display: inline-block;
+}
+
+.text-muted {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+/* Modal QR override */
+.modal-qr.sesion-qr {
+  margin-top: -10px;
+  padding-top: 0;
+  border-top: none;
+  background: none;
+  box-shadow: none;
+}
+
+/* Ocurrencias section (legacy) */
+.ocurrencias-detalle-section {
+  margin-top: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ocurrencias-detalle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ocurrencias-detalle-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.btn-add-ocurrencia-detalle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f0fdf4;
+  color: #26bc58;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-ocurrencia-detalle:hover {
+  background: #dcfce7;
+  border-color: #26bc58;
+}
+
+.ocurrencia-detalle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 12px;
+}
+
+.ocurrencia-detalle-item:last-of-type {
+  border-bottom: none;
+}
+
+.ocurrencia-detalle-principal {
+  background: #f0fdf4;
+}
+
+.ocurrencia-detalle-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.ocurrencia-detalle-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  min-width: 22px;
+}
+
+.ocurrencia-detalle-fecha {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.ocurrencia-detalle-hora {
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.ocurrencia-detalle-asistentes {
+  font-size: 12px;
+  color: #26bc58;
+  font-weight: 600;
+}
+
+.ocurrencia-detalle-facilitador {
+  font-size: 12px;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-style: italic;
+}
+
+.ocurrencia-detalle-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-oc-qr,
+.btn-oc-copy,
+.btn-oc-delete {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: all 0.2s ease;
+}
+
+.btn-oc-qr:hover,
+.btn-oc-copy:hover {
+  color: #26bc58;
+  border-color: #26bc58;
+  background: #f0fdf4;
+}
+
+.btn-oc-delete:hover {
+  color: #ef4444;
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+/* ── Admin View Selector ── */
+.admin-view-selector {
+  display: flex;
+  background: #f1f3f5;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-top: 12px;
+  width: fit-content;
+}
+
+.admin-view-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-view-btn:hover {
+  color: #212529;
+}
+
+.admin-view-btn.active {
+  background: white;
+  color: #26bc58;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 600px) {
+  .admin-view-selector {
+    width: 100%;
+  }
+
+  .admin-view-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.form-nueva-ocurrencia {
+  padding: 14px 16px;
+  background: #f9fafb;
+  border-top: 1px dashed #d1d5db;
+}
+
+.nueva-oc-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.nueva-oc-botones {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

@@ -17,7 +17,7 @@ function AccesoDenegado() {
     no_autorizado: {
       titulo: 'Acceso no autorizado',
       subtitulo: 'Su cuenta no está registrada en el sistema',
-      mensaje: 'El acceso al sistema de creacion de formulario de formacion o evento está restringido a usuarios autorizados por Talento Humano.'
+      mensaje: 'El acceso al sistema de creación de formularios de formación está restringido a usuarios autorizados por Talento Humano.'
     },
     inactivo: {
       titulo: 'Cuenta Inactiva',
@@ -54,7 +54,7 @@ function AccesoDenegado() {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                El acceso al sistema de creacion de formulario de formacion o evento está restringido a usuarios autorizados por de Talento Humano.
+                El acceso al sistema de creación de formularios de formación está restringido a usuarios autorizados por Talento Humano.
               </li>
               <li>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

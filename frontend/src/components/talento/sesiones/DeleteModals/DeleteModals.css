@@ -1,0 +1,21 @@
+/* ── Delete Modals Styles ── */
+.modal-eliminar-content ul {
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.modal-eliminar-content li {
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.modal-actions button {
+    flex: 0 1 auto;
+}

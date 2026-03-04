@@ -1,7 +1,12 @@
-h1, h2, h3, .header-title, .header-subtitle {
+h1,
+h2,
+h3,
+.header-title,
+.header-subtitle {
   font-family: Arial, sans-serif !important;
   font-weight: normal;
 }
+
 :root {
   /* Colores principales - Basados en el logo */
   --primary: #2D5F4C;
@@ -27,10 +32,10 @@ h1, h2, h3, .header-title, .header-subtitle {
   --bg-hover: #f1f5f9;
 
   /* Sombras */
-  --shadow-sm: 0 1px 3px rgba(45,95,76,0.12);
-  --shadow-md: 0 4px 12px rgba(45,95,76,0.08);
-  --shadow-lg: 0 10px 30px rgba(45,95,76,0.12);
-  --shadow-xl: 0 20px 60px rgba(45,95,76,0.15);
+  --shadow-sm: 0 1px 3px rgba(45, 95, 76, 0.12);
+  --shadow-md: 0 4px 12px rgba(45, 95, 76, 0.08);
+  --shadow-lg: 0 10px 30px rgba(45, 95, 76, 0.12);
+  --shadow-xl: 0 20px 60px rgba(45, 95, 76, 0.15);
 
   /* Radios */
   --radius-sm: 8px;
@@ -43,6 +48,13 @@ h1, h2, h3, .header-title, .header-subtitle {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
 }
 
 body {
@@ -83,6 +95,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -93,6 +106,7 @@ body {
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -120,12 +134,11 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   padding: 24px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover {
   box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
 }
 
 /* Responsive */

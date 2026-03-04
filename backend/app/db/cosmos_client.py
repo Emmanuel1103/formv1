@@ -1,4 +1,5 @@
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
+from azure.core.exceptions import ServiceResponseError
 from typing import List, Optional, Dict, Any
 import sys
 from pathlib import Path
@@ -6,6 +7,35 @@ import time
 sys.path.append(str(Path(__file__).parent.parent))
 
 from core.config import settings
+
+def _cosmos_retry(fn, max_retries: int = 3, base_delay: float = 1.0):
+    """Ejecuta fn con reintentos ante errores transitorios de red (ej. ConnectionResetError)."""
+    delay = base_delay
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            return fn()
+        except (ServiceResponseError, Exception) as e:
+            # Reintentar solo en errores de red / conexión
+            err_str = str(e).lower()
+            is_network_err = (
+                isinstance(e, ServiceResponseError) or
+                'connection' in err_str or
+                'aborted' in err_str or
+                'reset' in err_str or
+                'timeout' in err_str
+            )
+            if not is_network_err:
+                raise  # Error de lógica (404, 403, etc.) → no reintentar
+            last_error = e
+            if attempt < max_retries - 1:
+                print(f"⚠️  CosmosDB error transitorio (intento {attempt+1}/{max_retries}): {e}. Reintentando en {delay}s...")
+                time.sleep(delay)
+                delay *= 2
+            else:
+                print(f"❌ CosmosDB error tras {max_retries} intentos: {e}")
+    raise last_error
+
 
 class CosmosDBClient:
     def __init__(self):
@@ -86,32 +116,74 @@ class CosmosDBClient:
             print(f"Error obteniendo sesión: {e}")
             raise
     
-    def listar_sesiones(self, owner_email: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Listar sesiones. Si se pasa owner_email, filtra solo las sesiones creadas por ese email."""
-        try:
+    def listar_sesiones(self, owner_email: Optional[str] = None, tipos_actividad: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+        """Listar sesiones con reintentos ante errores transitorios de red."""
+        def _query():
+            parameters = []
+            where_clauses = []
+            
             if owner_email:
-                query = "SELECT * FROM c WHERE c.created_by = @owner ORDER BY c.created_at DESC"
-                parameters = [{"name": "@owner", "value": owner_email}]
-                items = list(self.sesiones_container.query_items(
-                    query=query,
-                    parameters=parameters,
-                    enable_cross_partition_query=True
-                ))
-            else:
-                query = "SELECT * FROM c ORDER BY c.created_at DESC"
-                items = list(self.sesiones_container.query_items(
-                    query=query,
-                    enable_cross_partition_query=True
-                ))
-            return items
+                where_clauses.append("c.created_by = @owner")
+                parameters.append({"name": "@owner", "value": owner_email})
+            
+            if tipos_actividad:
+                # Construir cláusula IN dinámicamente
+                placeholders = []
+                for i, tipo in enumerate(tipos_actividad):
+                    p_name = f"@tipo{i}"
+                    placeholders.append(p_name)
+                    parameters.append({"name": p_name, "value": tipo})
+                where_clauses.append(f"c.tipo_actividad IN ({', '.join(placeholders)})")
+
+            query = "SELECT * FROM c"
+            if where_clauses:
+                query += " WHERE " + " AND ".join(where_clauses)
+            
+            query += " ORDER BY c.created_at DESC"
+            
+            return list(self.sesiones_container.query_items(
+                query=query,
+                parameters=parameters,
+                enable_cross_partition_query=True
+            ))
+            
+        try:
+            return _cosmos_retry(_query)
         except exceptions.CosmosHttpResponseError as e:
             print(f"Error listando sesiones: {e}")
             raise
+
+    def listar_sesiones_admin(self, admin_email: str) -> List[Dict[str, Any]]:
+        """Listar sesiones para admin: las propias + todas las de tipo Inducción/Formación."""
+        def _query():
+            query = """
+                SELECT * FROM c 
+                WHERE c.created_by = @admin 
+                OR c.tipo_actividad IN ('Inducción', 'Formación', 'Capacitación') 
+                ORDER BY c.created_at DESC
+            """
+            parameters = [{"name": "@admin", "value": admin_email}]
+            return list(self.sesiones_container.query_items(
+                query=query,
+                parameters=parameters,
+                enable_cross_partition_query=True
+            ))
+
+        try:
+            return _cosmos_retry(_query)
+        except exceptions.CosmosHttpResponseError as e:
+            print(f"Error listando sesiones admin: {e}")
+            raise
     
     def obtener_sesion_por_token(self, token: str) -> Optional[Dict[str, Any]]:
-        """Obtener sesión por token"""
+        """Obtener sesión por token. Busca en la raíz y en el arreglo de ocurrencias."""
         try:
-            query = "SELECT * FROM c WHERE c.token = @token"
+            # Query que busca el token en la raíz O dentro de cualquier objeto del array 'ocurrencias'
+            query = """
+                SELECT * FROM c 
+                WHERE c.token = @token 
+                OR EXISTS(SELECT VALUE oc FROM oc IN c.ocurrencias WHERE oc.token = @token)
+            """
             parameters = [{"name": "@token", "value": token}]
             items = list(self.sesiones_container.query_items(
                 query=query,
@@ -174,6 +246,7 @@ class CosmosDBClient:
             print(f"Error listando asistentes: {e}")
             raise
     
+
     def verificar_asistente_duplicado(self, cedula: str, token: str) -> bool:
         """Verificar si un asistente ya está registrado"""
         try:

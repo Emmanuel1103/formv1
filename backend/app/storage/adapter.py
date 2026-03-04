@@ -26,25 +26,7 @@ class StorageAdapter(ABC):
         """
         pass
     
-    @abstractmethod
-    def save_firma(self, firma_image_bytes: bytes, cedula: str, nombre_capacitacion: str = "", created_by: str = "", nombre_persona: str = "") -> str:
-        """
-        Save signature (firma) image to storage.
-        
-        Args:
-            firma_image_bytes: Signature image as bytes
-            cedula: ID number of the person
-            nombre_capacitacion: Name of the training session
-            created_by: Email/name of the training creator
-            nombre_persona: Name of the person signing
-            
-        Returns:
-            URL or path to access the saved signature
-            
-        New structure: {Creator}/{Training}/Firmas/Firma_{Cedula}.png
-        """
-        pass
-    
+
     @abstractmethod
     def delete_qr(self, filename: str) -> bool:
         """
@@ -58,19 +40,7 @@ class StorageAdapter(ABC):
         """
         pass
     
-    @abstractmethod
-    def delete_firma(self, filename: str) -> bool:
-        """
-        Delete signature from storage.
-        
-        Args:
-            filename: Name of the file to delete
-            
-        Returns:
-            True if deleted successfully, False otherwise
-        """
-        pass
-    
+
     @abstractmethod
     def get_qr_url(self, filename: str) -> str:
         """
@@ -84,15 +54,3 @@ class StorageAdapter(ABC):
         """
         pass
     
-    @abstractmethod
-    def get_firma_url(self, filename: str) -> str:
-        """
-        Get URL to access a signature.
-        
-        Args:
-            filename: Name of the firma file
-            
-        Returns:
-            URL or path to access the signature
-        """
-        pass

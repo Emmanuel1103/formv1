@@ -1,0 +1,186 @@
+.ver-asistentes {
+  animation: fadeIn 0.5s ease;
+}
+
+/* ── Info Panel / Filtros ── */
+.va-filtros-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  align-items: flex-end;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.va-filtro-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  /* Evita que el contenido rompa el grid */
+}
+
+/* El nombre de la formación debe ocupar más espacio si es posible */
+.va-filtro-nombre,
+.va-filtro-acciones-doble {
+  grid-column: span 2;
+}
+
+@media (max-width: 1200px) {
+
+  .va-filtro-nombre,
+  .va-filtro-acciones-doble {
+    grid-column: auto;
+  }
+}
+
+.va-filtro-fecha {
+  min-width: 120px;
+}
+
+.va-filtro-hora {
+  min-width: 130px;
+}
+
+.va-filtro-facilitador {
+  min-width: 180px;
+}
+
+.va-filtro-selector-sesion {
+  min-width: 180px;
+}
+
+.va-filtro-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.01em;
+}
+
+.va-select,
+.va-input-readonly {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text-dark);
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.va-select:focus {
+  border-color: #26BC58;
+  box-shadow: 0 0 0 3px rgba(38, 188, 88, 0.1);
+}
+
+.va-input-readonly {
+  background: #f8fafc;
+  cursor: default;
+}
+
+.va-badge-sesiones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  /* Ocupar todo el ancho asignado por el grid */
+}
+
+.btn-exportar-excel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 44px;
+  background: #26BC58;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-exportar-excel:hover {
+  background: #1e9d4c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(38, 188, 88, 0.2);
+}
+
+/* ── Table Container (Shared with SessionsView) ── */
+.asistentes-table-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+}
+
+.asistentes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.asistentes-table th {
+  background: #f8fafc;
+  padding: 14px 16px;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.asistentes-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  transition: background-color 0.2s ease;
+}
+
+.asistentes-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+.email-cell {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.empty-asistentes {
+  text-align: center;
+  padding: 80px 24px;
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+}
+
+.empty-asistentes p {
+  font-size: 16px;
+}
+
+@media (max-width: 800px) {
+  .va-filtros-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
