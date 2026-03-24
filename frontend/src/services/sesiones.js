@@ -20,7 +20,7 @@ const cacheEsValido = () =>
 export const sesionesService = {
   // Crear nueva capacitación
   crear: async (sesionData) => {
-    const response = await api.post('/api/sesiones', sesionData);
+    const response = await api.post('/api/sesiones/', sesionData);
     invalidarCache();
     return response.data;
   },
@@ -29,7 +29,7 @@ export const sesionesService = {
   listar: async () => {
     // 1. Caché válida: devolver inmediatamente y refrescar en background
     if (cacheEsValido()) {
-      api.get('/api/sesiones').then(r => {
+      api.get('/api/sesiones/').then(r => {
         _sesionesCache = r.data;
         _cacheTimestamp = Date.now();
       }).catch(() => { });
@@ -42,7 +42,7 @@ export const sesionesService = {
     }
 
     // 3. Sin caché y sin petición activa: lanzar una nueva
-    _pendingRequest = api.get('/api/sesiones')
+    _pendingRequest = api.get('/api/sesiones/')
       .then(r => {
         _sesionesCache = r.data;
         _cacheTimestamp = Date.now();
@@ -57,53 +57,53 @@ export const sesionesService = {
 
   // Obtener una capacitación por ID
   obtenerPorId: async (id) => {
-    const response = await api.get(`/api/sesiones/${id}`);
+    const response = await api.get(`/api/sesiones/${id}/`);
     return response.data;
   },
 
   // Actualizar capacitación
   actualizar: async (id, sesionData) => {
-    const response = await api.put(`/api/sesiones/${id}`, sesionData);
+    const response = await api.put(`/api/sesiones/${id}/`, sesionData);
     invalidarCache();
     return response.data;
   },
 
   // Eliminar capacitación
   eliminar: async (id) => {
-    await api.delete(`/api/sesiones/${id}`);
+    await api.delete(`/api/sesiones/${id}/`);
     invalidarCache();
   },
 
   // Obtener asistentes de una capacitación (con filtro opcional por ocurrencia)
   obtenerAsistentes: async (id, ocurrenciaId = null) => {
     const params = ocurrenciaId ? `?ocurrencia_id=${ocurrenciaId}` : '';
-    const response = await api.get(`/api/sesiones/${id}/asistentes${params}`);
+    const response = await api.get(`/api/sesiones/${id}/asistentes/${params}`);
     return response.data;
   },
 
   // Añadir una nueva ocurrencia/fecha a una formación
   agregarOcurrencia: async (sesionId, datos) => {
-    const response = await api.post(`/api/sesiones/${sesionId}/ocurrencias`, datos);
+    const response = await api.post(`/api/sesiones/${sesionId}/ocurrencias/`, datos);
     invalidarCache();
     return response.data;
   },
 
   // Eliminar una ocurrencia de una formación
   eliminarOcurrencia: async (sesionId, ocurrenciaId) => {
-    await api.delete(`/api/sesiones/${sesionId}/ocurrencias/${ocurrenciaId}`);
+    await api.delete(`/api/sesiones/${sesionId}/ocurrencias/${ocurrenciaId}/`);
     invalidarCache();
   },
 
   // Actualizar una ocurrencia de una formación
   actualizarOcurrencia: async (sesionId, ocurrenciaId, datos) => {
-    const response = await api.patch(`/api/sesiones/${sesionId}/ocurrencias/${ocurrenciaId}`, datos);
+    const response = await api.patch(`/api/sesiones/${sesionId}/ocurrencias/${ocurrenciaId}/`, datos);
     invalidarCache();
     return response.data;
   },
 
   // Obtener reporte completo consolidado
   obtenerReporteCompleto: async () => {
-    const response = await api.get('/api/seguimiento/reporte-completo');
+    const response = await api.get('/api/seguimiento/reporte-completo/');
     return response.data;
   }
 };

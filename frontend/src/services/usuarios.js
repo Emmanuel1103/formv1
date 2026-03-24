@@ -5,7 +5,7 @@ export const usuariosService = {
   // Obtener todos los usuarios
   async listar() {
     const token = getAuthToken();
-    const response = await fetch(`${config.apiUrl}/api/usuarios`, {
+    const response = await fetch(`${config.apiUrl}/api/usuarios/`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -17,7 +17,7 @@ export const usuariosService = {
   // Cambiar el rol de un usuario
   async cambiarRol(usuarioId, nuevoRol) {
     const token = getAuthToken();
-    const response = await fetch(`${config.apiUrl}/api/usuarios/${usuarioId}/rol?rol=${encodeURIComponent(nuevoRol)}`, {
+    const response = await fetch(`${config.apiUrl}/api/usuarios/${usuarioId}/rol/?rol=${encodeURIComponent(nuevoRol)}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -33,7 +33,7 @@ export const usuariosService = {
   // Eliminar un usuario
   async eliminar(id) {
     const token = getAuthToken();
-    const response = await fetch(`${config.apiUrl}/api/usuarios/${id}`, {
+    const response = await fetch(`${config.apiUrl}/api/usuarios/${id}/`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`

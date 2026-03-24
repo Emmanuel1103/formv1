@@ -50,6 +50,8 @@ if settings.FRONTEND_URL and settings.FRONTEND_URL not in allowed_origins:
         http_variant = settings.FRONTEND_URL.replace("https://", "http://")
         allowed_origins.append(http_variant)
 
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -58,6 +60,9 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"]
 )
+
+# Middleware para manejar cabeceras de proxy (X-Forwarded-Proto) en Azure
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 # Incluir routers
 app.include_router(sesiones.router)
