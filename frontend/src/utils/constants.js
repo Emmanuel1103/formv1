@@ -1,17 +1,26 @@
 const getApiUrl = () => {
-  // Si está definida la variable de entorno, usarla
+  let url = '';
+
+  // 1. Prioridad a la variable de entorno
   if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
+    url = import.meta.env.VITE_API_URL;
   }
-  
-  // Si estamos en Azure Container Apps, detectar automáticamente y forzar HTTPS
-  if (window.location.hostname.includes('azurecontainerapps.io')) {
+  // 2. Detección automática en Azure
+  else if (window.location.hostname.includes('azurecontainerapps.io')) {
     const hostname = window.location.hostname.replace('-web-', '-api-');
-    return `https://${hostname}`; // Forzar HTTPS en Azure
+    url = `https://${hostname}`;
   }
-  
-  // Por defecto, localhost para desarrollo
-  return 'http://localhost:8000';
+  // 3. Fallback a localhost
+  else {
+    url = 'https://localhost:8000';
+  }
+
+  // VALIDACIÓN CRÍTICA: Forzar HTTPS si es Azure (evita mixed content)
+  if (url.includes('azurecontainerapps.io') && url.startsWith('http://')) {
+    url = url.replace('http://', 'https://');
+  }
+
+  return url;
 };
 
 export const config = {
