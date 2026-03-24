@@ -1,7 +1,7 @@
 export const ACTIVITY_HELP_ITEMS = [
   {
     term: 'Capacitacion',
-    description: 'Proceso formativo orientado a desarrollar habilidades especificas para mejorar el desempeno en el cargo.'
+    description: 'La capacitación es una acción practica orientadda al desarrollo de habilidades y conocimientos especificos para el cargo actual, con el objetivo de garantizar el cumplimiento de politicas, normativas legales y procedimientos internos de la FSD.'
   },
   {
     term: 'Induccion',
@@ -9,10 +9,10 @@ export const ACTIVITY_HELP_ITEMS = [
   },
   {
     term: 'Formacion',
-    description: 'Proceso de aprendizaje integral y continuo para fortalecer competencias tecnicas y blandas en el mediano y largo plazo.'
+    description: 'La formación está orientada al desarrollo de conocimientos teóricos y habilidades generales que permitan el fortalecimiento del perfil profesional del colaborador.'
   },
   {
     term: 'Otros (eventos)',
-    description: 'Espacio para actividades no clasicas, como talleres especiales, charlas externas, ferias o jornadas institucionales.'
+    description: 'Espacio para actividades, como talleres especiales, charlas externas, ferias o jornadas institucionales.'
   }
 ];
