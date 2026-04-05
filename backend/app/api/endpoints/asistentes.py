@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+import time
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
@@ -10,14 +11,19 @@ from schemas.sesion import SesionPublicResponse
 from services import sesiones as sesion_service
 from services import asistentes as asistente_service
 from core.exceptions import (
-    TokenNotFoundException, 
-    TokenExpiredException, 
+    TokenNotFoundException,
+    TokenExpiredException,
     TokenInactiveException,
     DuplicateRegistrationException
 )
 
 router = APIRouter(prefix="/api", tags=["asistentes"])
 limiter = Limiter(key_func=get_remote_address)
+
+# Caché para el lookup de token (página de formato de asistencia).
+# La información de la sesión no cambia durante el evento, así que 5 min es seguro.
+_TOKEN_CACHE_TTL = 300  # segundos
+_token_cache: dict[str, tuple[dict, float]] = {}  # token → (data, timestamp)
 
 @router.get("/asistentes/{cedula}", response_model=dict)
 @limiter.limit("60/minute")
@@ -57,9 +63,14 @@ async def obtener_info_sesion(token: str, request: Request):
     Obtener información pública de una capacitación por token.
     Rate limit: 30 intentos por minuto por IP.
     """
+    # Devolver desde caché si aún es válida
+    cached = _token_cache.get(token)
+    if cached and (time.time() - cached[1]) < _TOKEN_CACHE_TTL:
+        return cached[0]
+
     try:
         sesion = sesion_service.get_sesion_by_token(token)
-        return {
+        data = {
             "tema": sesion['tema'],
             "fecha": sesion['fecha'],
             "facilitador_entidad": sesion.get('facilitador_entidad'),
@@ -73,6 +84,8 @@ async def obtener_info_sesion(token: str, request: Request):
             "dirigido_a": sesion.get('dirigido_a'),
             "modalidad": sesion.get('modalidad')
         }
+        _token_cache[token] = (data, time.time())
+        return data
     except (TokenNotFoundException, TokenExpiredException, TokenInactiveException) as e:
         raise e
 

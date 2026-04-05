@@ -3,8 +3,11 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from db.cosmos_client import get_cosmos_db
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import uuid
+
+def _colombia_now() -> str:
+    return datetime.now(timezone(timedelta(hours=-5))).isoformat()
 
 class UsuarioService:
     def __init__(self):
@@ -23,8 +26,7 @@ class UsuarioService:
                 "id": user_id,
                 "nombre": nombre,
                 "rol": "Usuario",
-                "fecha_ingreso": datetime.utcnow().isoformat(),
-                "formularios_creados": 0
+                "fecha_ingreso": _colombia_now()
             }
             return self.cosmos_db.crear_usuario(usuario_data)
     
@@ -35,8 +37,7 @@ class UsuarioService:
             "id": usuario_id,
             "nombre": nombre,
             "rol": rol,
-            "fecha_ingreso": datetime.utcnow().isoformat(),
-            "formularios_creados": 0
+            "fecha_ingreso": _colombia_now()
         }
         return self.cosmos_db.crear_usuario(usuario_data)
     
@@ -64,10 +65,9 @@ class UsuarioService:
         return self.cosmos_db.eliminar_usuario(usuario_id)
     
     def obtener_rol_usuario(self, usuario_id: str):
-        """Obtener el rol de un usuario"""
+        """Obtener el rol de un usuario directamente desde la base de datos."""
         if not usuario_id or not isinstance(usuario_id, str):
             return "Usuario"
-            
         try:
             usuario = self.obtener_usuario_por_id(usuario_id)
             return usuario.get("rol") if usuario else "Usuario"
@@ -80,23 +80,5 @@ class UsuarioService:
         # Permitir acceso a cualquier usuario autenticado
         return True, "autorizado"
     
-    def incrementar_formularios_creados(self, usuario_id: str):
-        """Incrementar el contador de formularios creados por un usuario"""
-        usuario = self.obtener_usuario_por_id(usuario_id)
-        if usuario:
-            contador_actual = usuario.get('formularios_creados', 0)
-            self.actualizar_usuario(usuario_id, formularios_creados=contador_actual + 1)
-            return contador_actual + 1
-        return 0
-    
-    def decrementar_formularios_creados(self, usuario_id: str):
-        """Decrementar el contador de formularios creados por un usuario"""
-        usuario = self.obtener_usuario_por_id(usuario_id)
-        if usuario:
-            contador_actual = usuario.get('formularios_creados', 0)
-            nuevo_contador = max(0, contador_actual - 1)
-            self.actualizar_usuario(usuario_id, formularios_creados=nuevo_contador)
-            return nuevo_contador
-        return 0
 
 usuario_service = UsuarioService()

@@ -22,12 +22,7 @@ async def actualizar_permisos(
     current_user: dict = Depends(get_current_user)
 ):
     """Actualizar la configuración de permisos (solo administradores)"""
-    from services.usuarios import usuario_service
-    
-    # Verificar que el usuario sea administrador
-    user_id = current_user.get("oid") or current_user.get("sub")
-    rol = usuario_service.obtener_rol_usuario(user_id)
-    
+    rol = current_user.get("rol", "Usuario")
     if rol != "Administrador":
         raise HTTPException(
             status_code=403,
@@ -47,9 +42,8 @@ async def restablecer_permisos_defecto(
     """Restablecer permisos a valores por defecto (solo administradores)"""
     from app.services.usuarios import usuario_service
     
-    # Verificar que el usuario sea administrador
-    user_id = current_user.get("oid") or current_user.get("sub")
-    rol = usuario_service.obtener_rol_usuario(user_id)
+    # Verificar que el usuario sea administrador usando el rol del JWT (firmado con HS256)
+    rol = current_user.get("rol", "Usuario")
     
     if rol != "Administrador":
         raise HTTPException(

@@ -3,6 +3,11 @@ from services import sesiones as sesion_service
 
 router = APIRouter()
 
+# Caché en memoria para imágenes QR: el link nunca cambia, no hay razón
+# para regenerar la imagen en cada solicitud.
+# Clave: link (str) → bytes PNG. Se limpia si el servidor se reinicia.
+_qr_cache: dict[str, bytes] = {}
+
 @router.get("/{sesion_id}/asistentes")
 async def obtener_asistentes(sesion_id: str, ocurrencia_id: str = None):
     from services import asistentes as asistente_service
@@ -18,13 +23,17 @@ async def obtener_asistentes(sesion_id: str, ocurrencia_id: str = None):
 async def obtener_qr_sesion(sesion_id: str):
     sesion = sesion_service.get_sesion_by_id(sesion_id)
     if not sesion: raise HTTPException(status_code=404, detail="Sesión no encontrada")
-    qr_bytes = sesion_service.generar_qr_dinamico(sesion['link'])
-    return Response(content=qr_bytes, media_type="image/png")
+    link = sesion['link']
+    if link not in _qr_cache:
+        _qr_cache[link] = sesion_service.generar_qr_dinamico(link)
+    return Response(content=_qr_cache[link], media_type="image/png")
 
 @router.get("/{sesion_id}/ocurrencias/{ocurrencia_id}/qr")
 async def obtener_qr_ocurrencia(sesion_id: str, ocurrencia_id: str):
     sesion = sesion_service.get_sesion_by_id(sesion_id)
     oc = next((o for o in sesion.get('ocurrencias', []) if o['id'] == ocurrencia_id), None)
     if not oc: raise HTTPException(status_code=404, detail="Ocurrencia no encontrada")
-    qr_bytes = sesion_service.generar_qr_dinamico(oc['link'])
-    return Response(content=qr_bytes, media_type="image/png")
+    link = oc['link']
+    if link not in _qr_cache:
+        _qr_cache[link] = sesion_service.generar_qr_dinamico(link)
+    return Response(content=_qr_cache[link], media_type="image/png")

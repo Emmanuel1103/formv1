@@ -1,12 +1,31 @@
 import React, { useState } from 'react';
-import { Header, Input, Button, Toast } from '../../../../components/common';
+import { Header, Input, Button, Toast, Select } from '../../../../components/common';
 import PantallaExito from '../../../../components/asistente/PantallaExito';
 import { asistentesService } from '../../../../services/asistentes';
 import { validations } from '../../../../utils/validations';
 import { formatters } from '../../../../utils/formatters';
 import '../Registro.css';
 
+const DIRECCIONES = [
+  'Dirección Regional Cartagena, Bolívar',
+  'Dirección Regional Barranquilla, Atlántico',
+  'Dirección de Inversión Social',
+  'Dirección de Hábitat y Desarrollo Urbano',
+  'Dirección Financiera y Administrativa',
+  'Dirección Talento Humano',
+  'Dirección de Comunicaciones',
+  'Dirección Jurídico y Secretaría General',
+  'Dirección Ejecutiva'
+
+  
+];
+
 const RegistroInterno = ({ sesion, token }) => {
+  const dirigidoA = sesion?.dirigido_a || '';
+  const esExterno = dirigidoA === 'Personal Externo';
+  const esAmbos = dirigidoA === 'Personal FSD y externo';
+  const opcionesDireccion = esAmbos ? [...DIRECCIONES, 'No aplica'] : DIRECCIONES;
+
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [toast, setToast] = useState(null);
@@ -73,7 +92,7 @@ const RegistroInterno = ({ sesion, token }) => {
           correo: ''
         }));
       }
-    } else if (['nombre', 'cargo', 'unidad'].includes(name)) {
+    } else if (['nombre', 'cargo'].includes(name)) {
       formattedValue = formatters.nombre(value);
     } else if (name === 'correo') {
       formattedValue = value.toLowerCase();
@@ -112,6 +131,8 @@ const RegistroInterno = ({ sesion, token }) => {
         if (!formData.autorizacion) {
           newErrors.autorizacion = 'Debe autorizar el tratamiento de datos personales';
         }
+      } else if (key === 'unidad' && esExterno) {
+        // No se valida dirección para personal externo
       } else if (validations[key]) {
         const error = validations[key](formData[key]);
         if (error) newErrors[key] = error;
@@ -137,7 +158,7 @@ const RegistroInterno = ({ sesion, token }) => {
         cedula: formData.cedula,
         nombre: formData.nombre,
         cargo: formData.cargo,
-        unidad: formData.unidad,
+        unidad: esExterno ? 'No aplica' : formData.unidad,
         correo: formData.correo,
         token: token
       });
@@ -242,17 +263,19 @@ const RegistroInterno = ({ sesion, token }) => {
                 disabled={!hasSearched || isSearching}
               />
 
-              <Input
-                label="Dirección"
-                name="unidad"
-                value={formData.unidad}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.unidad}
-                placeholder={!hasSearched ? "Ingresa la cédula primero" : "Ej: Recursos Humanos"}
-                required
-                disabled={!hasSearched || isSearching}
-              />
+              {!esExterno && (
+                <Select
+                  label="Dirección"
+                  name="unidad"
+                  value={formData.unidad}
+                  onChange={handleChange}
+                  error={errors.unidad}
+                  placeholder={!hasSearched ? 'Ingresa la cédula primero' : 'Selecciona una dirección'}
+                  required
+                  disabled={!hasSearched || isSearching}
+                  options={opcionesDireccion}
+                />
+              )}
 
               <Input
                 label="Correo electrónico"

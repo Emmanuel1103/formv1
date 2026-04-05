@@ -98,7 +98,6 @@
 .help-tooltip-bubble.bottom-center::after { left: 50%; margin-left: -4px; }
 
 /* States */
-.help-tooltip:hover .help-tooltip-icon,
 .help-tooltip.is-open .help-tooltip-icon {
   background: #334155;
   color: #ffffff;
@@ -106,7 +105,6 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.help-tooltip:hover .help-tooltip-bubble,
 .help-tooltip.is-open .help-tooltip-bubble {
   opacity: 1;
   visibility: visible;

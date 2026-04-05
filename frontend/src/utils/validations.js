@@ -25,10 +25,7 @@ export const validations = {
   },
 
   unidad: (value) => {
-    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    if (!value) return 'La dirección es obligatoria';
-    if (value.trim().length < 2) return 'La dirección debe tener al menos 2 caracteres';
-    if (!regex.test(value)) return 'La dirección solo puede contener letras y espacios';
+    if (!value || !value.trim()) return 'La dirección es obligatoria';
     return null;
   },
 

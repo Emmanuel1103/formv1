@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import './HelpTooltip.css';
 
 const HelpTooltip = ({ title = 'Ayuda', items = [], icon = '?' }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);   // abierto por click
+  const [hovered, setHovered] = useState(false); // abierto por hover
+  const isOpen = pinned || hovered;
   const [placement, setPlacement] = useState('top-right');
   const wrapperRef = useRef(null);
   const bubbleRef = useRef(null);
@@ -58,7 +60,7 @@ const HelpTooltip = ({ title = 'Ayuda', items = [], icon = '?' }) => {
   useEffect(() => {
     const handlePointerDown = (event) => {
       if (!wrapperRef.current?.contains(event.target)) {
-        setIsOpen(false);
+        setPinned(false);
       }
     };
 
@@ -71,34 +73,23 @@ const HelpTooltip = ({ title = 'Ayuda', items = [], icon = '?' }) => {
     };
   }, []);
 
-  const openTooltip = () => setIsOpen(true);
-  const closeTooltip = () => setIsOpen(false);
-
-  const handleBlur = (event) => {
-    if (!wrapperRef.current?.contains(event.relatedTarget)) {
-      closeTooltip();
-    }
-  };
-
   const handleToggle = (event) => {
     event.preventDefault();
-    setIsOpen(prev => !prev);
+    setPinned(prev => !prev);
   };
 
   return (
     <span
       ref={wrapperRef}
       className={`help-tooltip ${isOpen ? 'is-open' : ''}`}
-      onMouseEnter={openTooltip}
-      onMouseLeave={closeTooltip}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <button
         type="button"
         className="help-tooltip-icon"
         aria-label={`Ver ayuda de ${title}`}
         aria-expanded={isOpen}
-        onFocus={openTooltip}
-        onBlur={handleBlur}
         onClick={handleToggle}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

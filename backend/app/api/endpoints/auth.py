@@ -27,13 +27,14 @@ def create_msal_app():
     )
 
 
-def create_session_token(user_info: dict) -> str:
-    """Crea un JWT token para la sesión del usuario"""
+def create_session_token(user_info: dict, rol: str = "Usuario") -> str:
+    """Crea un JWT token para la sesión del usuario. El rol se embebe firmado."""
     payload = {
         "sub": user_info.get("preferred_username") or user_info.get("email"),
         "name": user_info.get("name"),
         "email": user_info.get("preferred_username") or user_info.get("email"),
         "oid": user_info.get("oid"),
+        "rol": rol,
         "exp": datetime.utcnow() + timedelta(days=settings.TOKEN_EXPIRY_DAYS),
         "iat": datetime.utcnow(),
     }
@@ -159,12 +160,14 @@ async def callback(request: Request, code: str, state: str):
         # Registrar usuario automáticamente si es la primera vez
         user_id = user_info.get("oid")  # Object ID de Azure
         user_name = user_info.get("name", email.split("@")[0])
-        
+
+        rol = "Usuario"
         if user_id:
-            usuario_service.registrar_o_actualizar_usuario(user_id, user_name)
-        
-        # Crear sesión
-        session_token = create_session_token(user_info)
+            usuario_db = usuario_service.registrar_o_actualizar_usuario(user_id, user_name)
+            rol = usuario_db.get("rol", "Usuario") if usuario_db else "Usuario"
+
+        # Crear sesión con el rol embebido y firmado en el JWT
+        session_token = create_session_token(user_info, rol)
         
         # Guardar información de la sesión
         user_sessions[session_token] = {
@@ -201,13 +204,27 @@ async def get_current_user(request: Request):
     user_data = verify_session_token(token)
     if not user_data:
         raise HTTPException(status_code=401, detail="Token inválido o expirado")
-    
-    return {
+
+    oid = user_data.get("oid", "")
+
+    # Consultar rol fresco desde Cosmos (una sola llamada por recarga de página)
+    rol_fresco = usuario_service.obtener_rol_usuario(oid)
+    rol_jwt = user_data.get("rol", "Usuario")
+
+    respuesta = {
         "email": user_data.get("email"),
         "name": user_data.get("name"),
-        "oid": user_data.get("oid"),
-        "rol": usuario_service.obtener_rol_usuario(user_data.get("oid", ""))
+        "oid": oid,
+        "rol": rol_fresco,
     }
+
+    # Si el rol cambió desde que se emitió el JWT, emitir un token nuevo
+    # para que los checks de autorización en otros endpoints también lo reflejen
+    if rol_fresco != rol_jwt:
+        nuevo_token = create_session_token(user_data, rol_fresco)
+        respuesta["new_token"] = nuevo_token
+
+    return respuesta
 
 
 @router.post("/logout")

@@ -48,10 +48,10 @@ class SesionesRepository(BaseRepository):
         return cosmos_retry(_query)
     
     def obtener_por_token(self, token: str) -> Optional[Dict[str, Any]]:
+        # TOP 1: Cosmos detiene el escaneo cross-partition en cuanto encuentra el primer match
         query = """
-            SELECT * FROM c 
-            WHERE c.token = @token 
-            OR EXISTS(SELECT VALUE oc FROM oc IN c.ocurrencias WHERE oc.token = @token)
+            SELECT TOP 1 * FROM c 
+            WHERE EXISTS(SELECT VALUE oc FROM oc IN c.ocurrencias WHERE oc.token = @token)
         """
         parameters = [{"name": "@token", "value": token}]
         items = list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
@@ -62,3 +62,11 @@ class SesionesRepository(BaseRepository):
     
     def eliminar(self, sesion_id: str) -> None:
         self.container.delete_item(item=sesion_id, partition_key=sesion_id)
+
+    def contar_por_usuario(self, usuario_id: str) -> int:
+        def _query():
+            query = "SELECT VALUE COUNT(1) FROM c WHERE c.created_by_id = @uid"
+            parameters = [{"name": "@uid", "value": usuario_id}]
+            items = list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
+            return items[0] if items else 0
+        return cosmos_retry(_query)

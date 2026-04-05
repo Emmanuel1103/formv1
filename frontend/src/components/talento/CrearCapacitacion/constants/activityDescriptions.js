@@ -1,7 +1,22 @@
+export const DIRIGIDO_A_HELP_ITEMS = [
+  {
+    term: 'Personal FSD',
+    description: 'Actividad dirigida exclusivamente al personal vinculado a la Fundación Santo Domingo. Solo los colaboradores internos de la FSD participan en esta actividad.'
+  },
+  {
+    term: 'Personal Externo',
+    description: 'Actividad orientada a personas que no pertenecen a la FSD, como contratistas, proveedores, aliados o comunidades beneficiarias.'
+  },
+  {
+    term: 'Personal FSD y externo',
+    description: 'Actividad de carácter mixto en la que participan tanto colaboradores internos de la FSD como personas externas a la organización. Disponible solo para eventos.'
+  }
+];
+
 export const ACTIVITY_HELP_ITEMS = [
   {
     term: 'Capacitacion',
-    description: 'La capacitación es una acción practica orientadda al desarrollo de habilidades y conocimientos especificos para el cargo actual, con el objetivo de garantizar el cumplimiento de politicas, normativas legales y procedimientos internos de la FSD.'
+    description: 'Es una acción practica orientadda al desarrollo de habilidades y conocimientos especificos para el cargo actual, con el objetivo de garantizar el cumplimiento de politicas, normativas legales y procedimientos internos de la FSD.'
   },
   {
     term: 'Induccion',
@@ -9,7 +24,7 @@ export const ACTIVITY_HELP_ITEMS = [
   },
   {
     term: 'Formacion',
-    description: 'La formación está orientada al desarrollo de conocimientos teóricos y habilidades generales que permitan el fortalecimiento del perfil profesional del colaborador.'
+    description: 'Está orientada al desarrollo de conocimientos teóricos y habilidades generales que permitan el fortalecimiento del perfil profesional del colaborador.'
   },
   {
     term: 'Otros (eventos)',

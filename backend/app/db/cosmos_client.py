@@ -57,6 +57,7 @@ class CosmosDBClient:
     def obtener_sesion_por_token(self, token): return self.sesiones.obtener_por_token(token)
     def actualizar_sesion(self, id, data): return self.sesiones.actualizar(id, data)
     def eliminar_sesion(self, id): return self.sesiones.eliminar(id)
+    def contar_sesiones_por_usuario(self, usuario_id): return self.sesiones.contar_por_usuario(usuario_id)
     
     def crear_o_actualizar_asistente(self, data, s_id): return self.asistentes.crear_o_actualizar(data, s_id)
     def obtener_asistente(self, id, s_id): return self.asistentes.obtener_por_id(id, s_id)

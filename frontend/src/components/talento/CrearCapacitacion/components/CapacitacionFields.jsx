@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Select, Radio as RadioGroup, HelpTooltip } from '../../../common';
-import { ACTIVITY_HELP_ITEMS } from '../constants/activityDescriptions';
+import { ACTIVITY_HELP_ITEMS, DIRIGIDO_A_HELP_ITEMS } from '../constants/activityDescriptions';
 
 const TIPOS_ACTIVIDAD = ['Capacitación', 'Inducción', 'Formación', 'Otros (eventos)'];
 const MODALIDADES = ['Virtual', 'Presencial', 'Híbrida'];
@@ -79,7 +79,12 @@ const CapacitacionFields = ({ formData, handleChange, errors, customTipo }) => {
                     required
                 />
                 <RadioGroup
-                    label="Dirigido a"
+                    label={
+                        <>
+                            Dirigido a
+                            <HelpTooltip title="Descripción de opciones" items={DIRIGIDO_A_HELP_ITEMS} />
+                        </>
+                    }
                     name="dirigido_a"
                     options={formData.actividad === 'Otros (eventos)' ? [...DIRIGIDO_A_OPTIONS, 'Personal FSD y externo'] : DIRIGIDO_A_OPTIONS}
                     value={formData.dirigido_a}

@@ -15,9 +15,7 @@ async def obtener_ayuda(
     try:
         ayuda = ayuda_service.obtener_ayuda()
         
-        # Obtener el rol del usuario actual
-        user_id = current_user.get("oid") or current_user.get("sub")
-        rol_usuario = usuario_service.obtener_rol_usuario(user_id)
+        rol_usuario = current_user.get("rol", "Usuario")
         
         # Filtrar tarjetas según el rol del usuario
         if ayuda.get("categorias"):
@@ -50,18 +48,14 @@ async def actualizar_ayuda(
     current_user: dict = Depends(get_current_user)
 ):
     """Actualizar el contenido del centro de ayuda (solo administradores)"""
-    from services.usuarios import usuario_service
-    
-    # Verificar que el usuario sea administrador
-    user_id = current_user.get("oid") or current_user.get("sub")
-    rol = usuario_service.obtener_rol_usuario(user_id)
-    
+    rol = current_user.get("rol", "Usuario")
     if rol != "Administrador":
         raise HTTPException(
             status_code=403,
             detail="Solo los administradores pueden modificar el centro de ayuda"
         )
-    
+
+    user_id = current_user.get("oid") or current_user.get("sub")
     try:
         resultado = ayuda_service.actualizar_ayuda(categorias, user_id)
         return resultado

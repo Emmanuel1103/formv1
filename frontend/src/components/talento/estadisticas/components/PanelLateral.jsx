@@ -112,6 +112,19 @@ const PanelLateral = ({
                         </div>
 
                         <div className="intel-select-group">
+                            <label className="intel-label-label">Tipo de actividad</label>
+                            <select
+                                className="intel-select-clean"
+                                value={slot.tipoActividad || 'Todos'}
+                                onChange={(e) => handleSlotChange(slot.id, 'tipoActividad', e.target.value)}
+                            >
+                                <option value="Todos">Internas y externas</option>
+                                <option value="Interno">Solo internas</option>
+                                <option value="Externo">Solo externas</option>
+                            </select>
+                        </div>
+
+                        <div className="intel-select-group">
                             <label className="intel-label-label">Visualización</label>
                             <select
                                 className="intel-select-clean"

@@ -35,12 +35,13 @@ const Estadisticas = () => {
         {
             id: 1,
             title: 'Análisis detallado',
-            dimension: 'facilitador_entidad',
+            dimension: 'mes',
             metric: 'horas',
-            type: 'bar-vertical',
+            type: 'area',
             year: 'Todos',
             month: 'Todos',
             grouping: 'month',
+            tipoActividad: 'Todos',
             color: '#26BC58',
             visualOptions: {
                 gridType: 'polygon',
@@ -121,7 +122,8 @@ const Estadisticas = () => {
                 const f = new Date(s.fecha);
                 const matchY = targetY === 'Todos' || f.getFullYear().toString() === targetY;
                 const matchM = targetM === 'Todos' || MESES[f.getMonth()] === targetM;
-                return matchY && matchM;
+                const matchTipo = !slot.tipoActividad || slot.tipoActividad === 'Todos' || (s.tipo_actividad || '').toLowerCase() === slot.tipoActividad.toLowerCase();
+                return matchY && matchM && matchTipo;
             });
         });
 
@@ -147,11 +149,16 @@ const Estadisticas = () => {
         fetchData();
     }, []);
 
+    const ACTIVIDADES_FSD = ['Inducción', 'Formación', 'Capacitación'];
+
     const fetchData = async () => {
         try {
             const sesiones = await sesionesService.listar();
-            setSesionesRaw(sesiones);
-            setMetrics(calculateKPIs(sesiones));
+            const sesionesFiltradasFSD = sesiones.filter(s =>
+                ACTIVIDADES_FSD.includes(s.actividad) && s.dirigido_a === 'Personal FSD'
+            );
+            setSesionesRaw(sesionesFiltradasFSD);
+            setMetrics(calculateKPIs(sesionesFiltradasFSD));
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -415,7 +422,7 @@ const Estadisticas = () => {
 
         try {
             const title = `${METRIC_LABELS[slot.metric]} por ${DIMENSION_LABELS[slot.dimension].toLowerCase()}`;
-            const subtitle = `análisis detallado de ${METRIC_LABELS[slot.metric].toLowerCase()} distribuidos por ${DIMENSION_LABELS[slot.dimension].toLowerCase()}`;
+            const subtitle = `Análisis detallado de ${METRIC_LABELS[slot.metric].toLowerCase()} distribuidos por ${DIMENSION_LABELS[slot.dimension].toLowerCase()}`;
 
             // clonar el svg para no afectar el dom original
             const svg = originalSvg.cloneNode(true);
@@ -459,12 +466,12 @@ const Estadisticas = () => {
                 // dibujar título (un poco más de margen)
                 ctx.fillStyle = '#1e293b';
                 ctx.font = 'bold 22px Arial';
-                ctx.fillText(title.toLowerCase(), padding, 45);
+                ctx.fillText(title, padding, 45);
 
                 // dibujar subtítulo
                 ctx.fillStyle = '#64748b';
                 ctx.font = '14px Arial';
-                ctx.fillText(subtitle.toLowerCase(), padding, 75);
+                ctx.fillText(subtitle, padding, 75);
 
                 // línea divisoria sutil
                 ctx.strokeStyle = '#f1f5f9';

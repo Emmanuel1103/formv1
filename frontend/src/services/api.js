@@ -67,4 +67,12 @@ api.interceptors.response.use(
   }
 );
 
+// Cliente público: sin token de sesión ni redirect a login.
+// Usar en páginas accesibles sin autenticación (ej: /registro).
+export const publicApi = axios.create({
+  baseURL: config.apiUrl,
+  timeout: 10000,
+  headers: { 'Content-Type': 'application/json' }
+});
+
 export default api;

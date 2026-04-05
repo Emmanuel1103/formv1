@@ -1,4 +1,4 @@
-from .crud import crear, list_all as listar, list_admin as get_sesiones_para_admin, get_by_id as get_sesion_by_id, delete as delete_sesion, increment_asistentes
+from .crud import crear, list_all as listar, list_admin as get_sesiones_para_admin, get_by_id as get_sesion_by_id, delete as delete_sesion, increment_asistentes, contar_por_usuario
 from .utils import generar_qr_dinamico, get_colombia_now
 from .recurrence import resolver_herencia, inyectar_primera_oc
 from .crud import preparar_respuesta
@@ -13,7 +13,8 @@ from .recurrence import generar_ocurrencia_dict
 __all__ = [
     'crear_sesion', 'get_all_sesiones', 'get_sesiones_para_admin', 'get_sesion_by_id',
     'get_sesion_by_token', 'actualizar_sesion', 'agregar_ocurrencia', 'eliminar_ocurrencia',
-    'actualizar_ocurrencia', 'delete_sesion', 'generar_qr_dinamico', 'increment_asistentes'
+    'actualizar_ocurrencia', 'delete_sesion', 'generar_qr_dinamico', 'increment_asistentes',
+    'contar_por_usuario'
 ]
 
 def crear_sesion(data): return crear(data)

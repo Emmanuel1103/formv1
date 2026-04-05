@@ -6,20 +6,14 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from schemas.usuario import Usuario, UsuarioUpdate
 from services.usuarios import usuario_service
+from services import sesiones as sesion_service
 from api.endpoints.auth import get_current_user
 
 router = APIRouter()
 
 def verificar_es_administrador(current_user: dict):
     """Verificar que el usuario actual es administrador"""
-    user_id = current_user.get("oid")
-    if not user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="No se pudo verificar el usuario"
-        )
-    
-    rol = usuario_service.obtener_rol_usuario(user_id)
+    rol = current_user.get("rol", "Usuario")
     if rol != "Administrador":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -30,6 +24,8 @@ def verificar_es_administrador(current_user: dict):
 async def listar_usuarios(current_user: dict = Depends(get_current_user)):
     """Listar todos los usuarios del sistema"""
     usuarios = usuario_service.listar_usuarios()
+    for u in usuarios:
+        u['formularios_creados'] = sesion_service.contar_por_usuario(u['id'])
     return usuarios
 
 @router.put("/{usuario_id}/rol")

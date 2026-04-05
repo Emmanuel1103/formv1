@@ -182,3 +182,10 @@ def increment_asistentes(sesion_id: str, ocurrencia_id: Optional[str] = None):
                         
                 save_sesiones(sesiones)
                 break
+
+def contar_por_usuario(usuario_id: str) -> int:
+    """Cuenta cuántas sesiones ha creado un usuario."""
+    if settings.STORAGE_MODE == "cosmosdb" and COSMOS_AVAILABLE:
+        return cosmos_db.contar_sesiones_por_usuario(usuario_id)
+    else:
+        return sum(1 for s in load_sesiones() if s.get('created_by_id') == usuario_id)
